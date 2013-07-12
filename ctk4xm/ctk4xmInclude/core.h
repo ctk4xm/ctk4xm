@@ -29,7 +29,74 @@
  */
 #define	TIM
 
+/**
+ * General Include Definition Section
+ */
+#ifdef TIM
 
+/**
+ * Standard MSP430 Include
+ */
+#include <msp430.h>
+
+#endif
+
+#ifdef FREESCALE
+
+/**
+ * Standard Freescale Include
+ */
+#include "derivative.h"
+/**
+ * Standard Enabled Interrupt Macro
+ */
+#include <hidef.h>
+
+/**
+ * Mask Bit 0
+ */
+#define BIT0		0x01
+
+/**
+ * Mask Bit 1
+ */
+#define BIT1		0x02
+
+/**
+ * Mask Bit 2
+ */
+#define BIT2		0x04
+
+/**
+ * Mask Bit 3
+ */
+#define BIT3		0x08
+
+/**
+ * Mask Bit 4
+ */
+#define BIT4		0x10
+
+/**
+ * Mask Bit 5
+ */
+#define BIT5		0x20
+
+/**
+ * Mask Bit 6
+ */
+#define BIT6		0x40
+
+/**
+ * Mask Bit 7
+ */
+#define BIT7		0x80
+
+#endif
+
+/**
+ * Pins Definition Section
+ */
 #ifdef TIM
 
 	// 7-Seg Module Pins Definition
@@ -75,25 +142,6 @@
 	#define D7_LCD				&PTBD,BIT5
 
 #endif
-
-
-
-
-
-// Bits Definitions
-#define BIT0		0x01
-#define BIT1		0x02
-#define BIT2		0x04
-#define BIT3		0x08
-#define BIT4		0x10
-#define BIT5		0x20
-#define BIT6		0x40
-#define BIT7		0x80
-
-/**
- * Standard MSP430 Include
- */
-#include <msp430.h>
 
 /**
  * Type Definition Unsigned Integer

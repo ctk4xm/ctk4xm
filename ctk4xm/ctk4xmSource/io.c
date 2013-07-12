@@ -22,13 +22,7 @@
  */
 
 #include "../ctk4xmInclude/io.h"
-
-#ifdef TIM
-	#include "../ctk4xmInclude/io-tim.h"
-#endif
-#ifdef FREESCALE
-	#include "../ctk4xmInclude/io-fm.h"
-#endif
+#include "../ctk4xmInclude/hal/io.h"
 
 /**
  * @brief Configure Digital Output Pin

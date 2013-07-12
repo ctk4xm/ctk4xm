@@ -1,5 +1,5 @@
 /**
- *  @file io-tim.h
+ *  @file io.h
  *  @brief Module that controls the I/O pins
  *  @date 11/07/2013
  *  @version 1.0.0
@@ -21,8 +21,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "core.h"
-#include "delay.h"
+#include "../core.h"
+#include "../delay.h"
 
 #ifdef TIM
 

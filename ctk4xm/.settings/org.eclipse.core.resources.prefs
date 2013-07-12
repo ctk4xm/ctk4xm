@@ -1,6 +1,10 @@
 eclipse.preferences.version=1
 encoding//Debug/ctk4timSources/subdir_rules.mk=UTF-8
 encoding//Debug/ctk4timSources/subdir_vars.mk=UTF-8
+encoding//Debug/ctk4xmSource/hal/fm/subdir_rules.mk=UTF-8
+encoding//Debug/ctk4xmSource/hal/fm/subdir_vars.mk=UTF-8
+encoding//Debug/ctk4xmSource/hal/tim/subdir_rules.mk=UTF-8
+encoding//Debug/ctk4xmSource/hal/tim/subdir_vars.mk=UTF-8
 encoding//Debug/ctk4xmSource/subdir_rules.mk=UTF-8
 encoding//Debug/ctk4xmSource/subdir_vars.mk=UTF-8
 encoding//Debug/ctk4xmSources/subdir_rules.mk=UTF-8

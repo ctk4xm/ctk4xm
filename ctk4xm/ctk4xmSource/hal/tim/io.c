@@ -1,5 +1,5 @@
 /**
- *  @file io-tim.c
+ *  @file io.c
  *  @brief Module that controls the I/O pins - Texas Instrument Microcontroller
  *  @date 10/07/2013
  *  @version 1.0.0
@@ -21,9 +21,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../ctk4xmInclude/io-fm.h"
+#include "../../../ctk4xmInclude/hal/io.h"
 
-#ifdef FREESCALE
+#ifdef TIM
 
 /**
  * PxOUT to PxDIR Register Offset
