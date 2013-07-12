@@ -379,13 +379,12 @@ void lcdShiftRight()
  */
 void lcdDataBinFormat(uchar row, uchar column, uchar exportData)
 {
-	// LCD Position
-	lcdSetCursor(row, column);
-
 	uchar binaryMask = 0x80;
 	uchar digit = 0;
-
 	int i = 0;
+
+	// LCD Position
+	lcdSetCursor(row, column);
 
 	for(i=0; i < 8; i++)
 	{
@@ -416,11 +415,11 @@ void lcdDataBinFormat(uchar row, uchar column, uchar exportData)
  */
 void lcdDataHexFormat(uchar row, uchar column, uchar exportData)
 {
-	// LCD Position
-	lcdSetCursor(row, column);
-
 	uchar firstDigit = 0;
 	uchar secondDigit = 0;
+
+	// LCD Position
+	lcdSetCursor(row, column);
 
 	// Print Hex Symbol
 	lcdData('0');
