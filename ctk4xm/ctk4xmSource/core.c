@@ -29,7 +29,7 @@
  */
 void stopWatchdogTimer()
 {
-	WDTCTL = WDTPW + WDTHOLD;
+	_hal_stopWatchdogTimer();
 }
 
 /**
@@ -37,8 +37,7 @@ void stopWatchdogTimer()
  */
 void configureDCOFrequency1MHz()
 {
-	BCSCTL1 = CALBC1_1MHZ;
-	DCOCTL = CALDCO_1MHZ;
+	_hal_configureDCOFrequency1MHz();
 }
 
 /**
@@ -46,8 +45,7 @@ void configureDCOFrequency1MHz()
  */
 void configureDCOFrequency8MHz()
 {
-	BCSCTL1 = CALBC1_8MHZ;
-	DCOCTL = CALDCO_8MHZ;
+	_hal_configureDCOFrequency8MHz();
 }
 
 /**
@@ -55,8 +53,7 @@ void configureDCOFrequency8MHz()
  */
 void configureDCOFrequency12MHz()
 {
-	BCSCTL1 = CALBC1_12MHZ;
-	DCOCTL = CALDCO_12MHZ;
+	_hal_configureDCOFrequency12MHz();
 }
 
 /**
@@ -64,8 +61,7 @@ void configureDCOFrequency12MHz()
  */
 void configureDCOFrequency16MHz()
 {
-	BCSCTL1 = CALBC1_16MHZ;
-	DCOCTL = CALDCO_16MHZ;
+	_hal_configureDCOFrequency16MHz();
 }
 
 /**
@@ -73,7 +69,7 @@ void configureDCOFrequency16MHz()
  */
 void enableInterrupts()
 {
-	_enable_interrupts();
+	_hal_enableInterrupts();
 }
 
 /**
@@ -81,7 +77,7 @@ void enableInterrupts()
  */
 void disableInterrupts()
 {
-	_disable_interrupts();
+	_hal_disableInterrupts();
 }
 
 /**
@@ -89,5 +85,5 @@ void disableInterrupts()
  */
 void entryLowPowerMode0()
 {
-	__low_power_mode_0();
+	_hal_entryLowPowerMode0();
 }
