@@ -21,8 +21,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../ctk4xmInclude/io.h"
-#include "../ctk4xmInclude/hal/io.h"
+#include "io.h"
+#include "hal/io.h"
 
 /**
  * @brief Configure Digital Output Pin

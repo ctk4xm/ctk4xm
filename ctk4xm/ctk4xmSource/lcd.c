@@ -21,7 +21,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../ctk4xmInclude/lcd.h"
+#include "lcd.h"
 
 /**
  * @brief Init LCD Module

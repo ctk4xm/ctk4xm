@@ -24,7 +24,7 @@
 /**
  * Application Include
  */
-#include "../ctk4XmInclude/ctk4xmApp.h"
+#include "ctk4xmApp.h"
 
 /*
  * @brief Application Program Loop

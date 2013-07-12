@@ -21,10 +21,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../core.h"
-#include "../delay.h"
+#ifndef IO_HAL_H_
+#define IO_HAL_H_
 
-#ifdef TIM
+#include "core.h"
+#include "delay.h"
 
 /**
  * @brief Configure Digital Output Pin

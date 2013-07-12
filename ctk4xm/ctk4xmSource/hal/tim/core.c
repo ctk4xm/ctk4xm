@@ -21,13 +21,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "core.h"
 #include "hal/core.h"
+
+#ifdef TIM
 
 /**
  * @brief Stop Watchdog Timer
  */
-void stopWatchdogTimer()
+void _hal_stopWatchdogTimer()
 {
 	WDTCTL = WDTPW + WDTHOLD;
 }
@@ -35,7 +36,7 @@ void stopWatchdogTimer()
 /**
  * @brief Configure DCO Frequency 1 MHz
  */
-void configureDCOFrequency1MHz()
+void _hal_configureDCOFrequency1MHz()
 {
 	BCSCTL1 = CALBC1_1MHZ;
 	DCOCTL = CALDCO_1MHZ;
@@ -44,7 +45,7 @@ void configureDCOFrequency1MHz()
 /**
  * @brief Configure DCO Frequency 8 MHz
  */
-void configureDCOFrequency8MHz()
+void _hal_configureDCOFrequency8MHz()
 {
 	BCSCTL1 = CALBC1_8MHZ;
 	DCOCTL = CALDCO_8MHZ;
@@ -53,7 +54,7 @@ void configureDCOFrequency8MHz()
 /**
  * @brief Configure DCO Frequency 12 MHz
  */
-void configureDCOFrequency12MHz()
+void _hal_configureDCOFrequency12MHz()
 {
 	BCSCTL1 = CALBC1_12MHZ;
 	DCOCTL = CALDCO_12MHZ;
@@ -62,7 +63,7 @@ void configureDCOFrequency12MHz()
 /**
  * @brief Configure DCO Frequency 16 MHz
  */
-void configureDCOFrequency16MHz()
+void _hal_configureDCOFrequency16MHz()
 {
 	BCSCTL1 = CALBC1_16MHZ;
 	DCOCTL = CALDCO_16MHZ;
@@ -71,7 +72,7 @@ void configureDCOFrequency16MHz()
 /**
  * @brief Enable Interrupts
  */
-void enableInterrupts()
+void _hal_enableInterrupts()
 {
 	_enable_interrupts();
 }
@@ -79,7 +80,7 @@ void enableInterrupts()
 /**
  * @brief Disable Interrupts
  */
-void disableInterrupts()
+void _hal_disableInterrupts()
 {
 	_disable_interrupts();
 }
@@ -87,7 +88,9 @@ void disableInterrupts()
 /**
  * @brief Entry Low Power Mode 0
  */
-void entryLowPowerMode0()
+void _hal_entryLowPowerMode0()
 {
 	__low_power_mode_0();
 }
+
+#endif

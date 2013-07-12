@@ -1,7 +1,7 @@
 /**
- *  @file delay.c
- *  @brief Module that allows delays
- *  @date 10/07/2013
+ *  @file core.h
+ *  @brief General CTK4XM API Specifications
+ *  @date 12/07/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -21,32 +21,47 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "delay.h"
+#ifndef CORE_HAL_H_
+#define CORE_HAL_H_
 
 /**
- * @brief Delay in Miliseconds
- * @param delayMs Milisecond Value
+ * @brief Stop Watchdog Timer
  */
-void delayMs(uint delayMs)
-{
-	uint i = 0;
-
-	for(i = 0; i < delayMs; i++)
-	{
-		_delay_cycles(DCO_FREQ/1000);
-	}
-}
+void _hal_stopWatchdogTimer();
 
 /**
- * @brief Delay in Microseconds
- * @param delayUs Microsecond Value
+ * @brief Configure DCO Frequency
  */
-void delayUs(uint delayUs)
-{
-	uint i = 0;
+void _hal_configureDCOFrequency1MHz();
 
-	for(i = 0; i < delayUs; i++)
-	{
-		_delay_cycles(DCO_FREQ/1000000);
-	}
-}
+/**
+ * @brief Configure DCO Frequency 8 MHz
+ */
+void _hal_configureDCOFrequency8MHz();
+
+/**
+ * @brief Configure DCO Frequency 12 MHz
+ */
+void _hal_configureDCOFrequency12MHz();
+
+/**
+ * @brief Configure DCO Frequency 16 MHz
+ */
+void _hal_configureDCOFrequency16MHz();
+
+/**
+ * @brief Enable Interrupts
+ */
+void _hal_enableInterrupts();
+
+/**
+ * @brief Disable Interrupts
+ */
+void _hal_disableInterrupts();
+
+/**
+ * @brief Entry Low Power Mode 0
+ */
+void _hal_entryLowPowerMode0();
+
+#endif

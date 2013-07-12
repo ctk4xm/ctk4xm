@@ -21,7 +21,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../ctk4xmInclude/display7Seg.h"
+#include "display7Seg.h"
 
 /**
  * Display 7-Seg Font
