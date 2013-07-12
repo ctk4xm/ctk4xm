@@ -29,6 +29,67 @@
  */
 #define	TIM
 
+
+#ifdef TIM
+
+	// 7-Seg Module Pins Definition
+	#define DISPLAY7SEG_A 		&P1OUT,BIT0
+	#define DISPLAY7SEG_B 		&P1OUT,BIT1
+	#define DISPLAY7SEG_C 		&P1OUT,BIT2
+	#define DISPLAY7SEG_D 		&P1OUT,BIT3
+	#define DISPLAY7SEG_E 		&P1OUT,BIT4
+	#define DISPLAY7SEG_F 		&P1OUT,BIT5
+	#define DISPLAY7SEG_G 		&P1OUT,BIT6
+	#define DISPLAY7SEG_SRCLK 	&P2OUT,BIT0
+	#define DISPLAY7SEG_SRDAT 	&P2OUT,BIT1
+
+	// LCD Module Pins Definition
+	#define RS_LCD				&P2OUT,BIT0
+	#define E_LCD				&P2OUT,BIT1
+	#define D4_LCD				&P2OUT,BIT2
+	#define D5_LCD				&P2OUT,BIT3
+	#define D6_LCD				&P2OUT,BIT4
+	#define D7_LCD				&P2OUT,BIT5
+
+#endif
+
+#ifdef FREESCALE
+
+	// 7-Seg Module Pins Definition
+	#define DISPLAY7SEG_A 		&PTBD,BIT0
+	#define DISPLAY7SEG_B 		&PTBD,BIT1
+	#define DISPLAY7SEG_C 		&PTBD,BIT2
+	#define DISPLAY7SEG_D 		&PTBD,BIT3
+	#define DISPLAY7SEG_E 		&PTBD,BIT4
+	#define DISPLAY7SEG_F 		&PTBD,BIT5
+	#define DISPLAY7SEG_G 		&PTBD,BIT6
+	#define DISPLAY7SEG_SRCLK 	&PTAD,BIT0
+	#define DISPLAY7SEG_SRDAT 	&PTAD,BIT1
+
+	// LCD Module Pins Definition
+	#define RS_LCD				&PTBD,BIT0
+	#define E_LCD				&PTBD,BIT1
+	#define D4_LCD				&PTBD,BIT2
+	#define D5_LCD				&PTBD,BIT3
+	#define D6_LCD				&PTBD,BIT4
+	#define D7_LCD				&PTBD,BIT5
+
+#endif
+
+
+
+
+
+// Bits Definitions
+#define BIT0		0x01
+#define BIT1		0x02
+#define BIT2		0x04
+#define BIT3		0x08
+#define BIT4		0x10
+#define BIT5		0x20
+#define BIT6		0x40
+#define BIT7		0x80
+
 /**
  * Standard MSP430 Include
  */

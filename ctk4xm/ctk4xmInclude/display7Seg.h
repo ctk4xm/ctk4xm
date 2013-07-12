@@ -27,20 +27,6 @@
 #include "core.h"
 #include "io.h"
 
-/*
- * Display 7-Seg Module
- */
-#define DISPLAY7SEG_A 		&P1OUT,BIT0
-#define DISPLAY7SEG_B 		&P1OUT,BIT1
-#define DISPLAY7SEG_C 		&P1OUT,BIT2
-#define DISPLAY7SEG_D 		&P1OUT,BIT3
-#define DISPLAY7SEG_E 		&P1OUT,BIT4
-#define DISPLAY7SEG_F 		&P1OUT,BIT5
-#define DISPLAY7SEG_G 		&P1OUT,BIT6
-
-#define DISPLAY7SEG_SRCLK 	&P2OUT,BIT0
-#define DISPLAY7SEG_SRDAT 	&P2OUT,BIT1
-
 /**
  * Max Displays Constant
  */
