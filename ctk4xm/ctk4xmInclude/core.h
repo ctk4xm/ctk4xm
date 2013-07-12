@@ -24,6 +24,10 @@
 #ifndef CORE_H_
 #define CORE_H_
 
+/**
+ * Microcontroller Platform Select
+ */
+#define	TIM
 
 /**
  * Standard MSP430 Include

@@ -30,12 +30,12 @@
 /**
  * Application Include
  */
-#include "ctk4xmApp.h"
+#include "../ctk4xmInclude/ctk4xmApp.h"
 
 /**
  * Core Module Include
  */
-#include "ctk4XmInclude/core.h"
+#include "../ctk4XmInclude/core.h"
 
 /*
  * @brief Main Program
