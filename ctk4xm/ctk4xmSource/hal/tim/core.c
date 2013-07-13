@@ -1,6 +1,6 @@
 /**
  *  @file core.c
- *  @brief General CTK4XM API Specifications
+ *  @brief General CTK4XM API Specifications - Texas Instrument Microcontroller
  *  @date 10/07/2013
  *  @version 1.0.0
  *
