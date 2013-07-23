@@ -26,12 +26,18 @@
  */
 #include "ctk4xmApp.h"
 
+/**
+ * Core Include
+ */
+#include "core.h"
+
 /*
  * @brief Application Program Loop
  */
 void application()
 {
-
+	// Select Internal Clock
+	coreSelectInternalClock();
 }
 
 /**

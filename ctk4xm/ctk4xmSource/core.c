@@ -25,6 +25,14 @@
 #include "hal/core.h"
 
 /**
+ * @brief Select Internal Clock
+ */
+void coreSelectInternalClock()
+{
+	_hal_coreSelectInternalClock();
+}
+
+/**
  * @brief Stop Watchdog Timer
  */
 void stopWatchdogTimer()

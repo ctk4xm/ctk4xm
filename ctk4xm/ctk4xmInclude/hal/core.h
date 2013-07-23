@@ -25,6 +25,11 @@
 #define CORE_HAL_H_
 
 /**
+ * @brief Select Internal Clock
+ */
+void _hal_coreSelectInternalClock();
+
+/**
  * @brief Stop Watchdog Timer
  */
 void _hal_stopWatchdogTimer();

@@ -229,6 +229,11 @@ typedef volatile unsigned char vuchar;
 #define ADC_CHTEMP	10
 
 /**
+ * @brief Select Internal Clock
+ */
+void coreSelectInternalClock();
+
+/**
  * @brief Stop Watchdog Timer
  */
 void stopWatchdogTimer();
