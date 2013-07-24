@@ -24,7 +24,7 @@
 #ifndef DELAY_H_
 #define DELAY_H_
 
-#include "core.h"
+#include "config.h"
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty

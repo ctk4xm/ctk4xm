@@ -24,7 +24,7 @@
 #ifndef DISPLAY7SEG_H_
 #define DISPLAY7SEG_H_
 
-#include "core.h"
+#include "config.h"
 #include "io.h"
 
 /**

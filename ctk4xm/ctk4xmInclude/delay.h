@@ -24,7 +24,7 @@
 #ifndef DELAY_H_
 #define DELAY_H_
 
-#include "core.h"
+#include "config.h"
 
 /**
  * @brief Delay in Miliseconds

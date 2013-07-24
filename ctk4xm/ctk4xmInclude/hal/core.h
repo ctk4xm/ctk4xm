@@ -24,6 +24,8 @@
 #ifndef CORE_HAL_H_
 #define CORE_HAL_H_
 
+#include "config.h"
+
 /**
  * @brief Select Internal Clock
  */

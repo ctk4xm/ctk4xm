@@ -24,7 +24,7 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
-#include "core.h"
+#include "config.h"
 
 /**
  * @brief Init Timer

@@ -24,7 +24,7 @@
 #ifndef UART_HAL_H_
 #define UART_HAL_H_
 
-#include "core.h"
+#include "config.h"
 #include "io.h"
 
 /**

@@ -24,7 +24,7 @@
 #ifndef IO_H_
 #define IO_H_
 
-#include "core.h"
+#include "config.h"
 #include "delay.h"
 
 /**

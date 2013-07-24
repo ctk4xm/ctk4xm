@@ -24,7 +24,7 @@
 #ifndef LCD_H_
 #define LCD_H_
 
-#include "core.h"
+#include "config.h"
 #include "delay.h"
 #include "io.h"
 

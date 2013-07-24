@@ -27,6 +27,11 @@
 #include "ctk4xmApp.h"
 
 /**
+ * Configurations Include
+ */
+#include "config.h"
+
+/**
  * Core Include
  */
 #include "core.h"

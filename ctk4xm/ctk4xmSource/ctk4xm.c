@@ -33,9 +33,9 @@
 #include "ctk4xmApp.h"
 
 /**
- * Core Module Include
+ * Configurations Include
  */
-#include "core.h"
+#include "config.h"
 
 /*
  * @brief Main Program
