@@ -27,8 +27,9 @@
 
 /**
  * @brief Select Internal Clock
+ * @param frequencyMHz MCU Frequency in MHz
  */
-void _hal_coreSelectInternalClock()
+void _hal_coreSelectInternalClock(uchar frequencyMHz)
 {
 	// Load Trim Value of NVICSTRM location
 	if (NVICSTRM != 0xFF)
@@ -38,6 +39,35 @@ void _hal_coreSelectInternalClock()
 	else
 	{
 	   ICSTRM = 0xAD;
+	}
+
+	// Set Frequency Selected
+	switch(frequencyMHz)
+	{
+		case 1:
+			/*BCSCTL1 = CALBC1_1MHZ;
+			DCOCTL = CALDCO_1MHZ;*/
+			break;
+
+		case 8:
+			/*BCSCTL1 = CALBC1_1MHZ;
+			DCOCTL = CALDCO_1MHZ;*/
+			break;
+
+		case 12:
+			/*BCSCTL1 = CALBC1_1MHZ;
+			DCOCTL = CALDCO_1MHZ;*/
+			break;
+
+		case 16:
+			/*BCSCTL1 = CALBC1_1MHZ;
+			DCOCTL = CALDCO_1MHZ;*/
+			break;
+
+		default:
+			/*BCSCTL1 = CALBC1_1MHZ;
+			DCOCTL = CALDCO_1MHZ;*/
+			break;
 	}
 
 	// Configure Internal Clock Source
@@ -70,52 +100,22 @@ void _hal_coreSelectInternalClock()
 }
 
 /**
+ * @brief Select External Clock
+ */
+void _hal_coreSelectExternalClock();
+
+/**
  * @brief Stop Watchdog Timer
  */
-void _hal_stopWatchdogTimer()
+void _hal_coreStopWatchdogTimer()
 {
 	WDTCTL = WDTPW + WDTHOLD;
 }
 
 /**
- * @brief Configure DCO Frequency 1 MHz
- */
-void _hal_configureDCOFrequency1MHz()
-{
-
-}
-
-/**
- * @brief Configure DCO Frequency 8 MHz
- */
-void _hal_configureDCOFrequency8MHz()
-{
-	BCSCTL1 = CALBC1_8MHZ;
-	DCOCTL = CALDCO_8MHZ;
-}
-
-/**
- * @brief Configure DCO Frequency 12 MHz
- */
-void _hal_configureDCOFrequency12MHz()
-{
-	BCSCTL1 = CALBC1_12MHZ;
-	DCOCTL = CALDCO_12MHZ;
-}
-
-/**
- * @brief Configure DCO Frequency 16 MHz
- */
-void _hal_configureDCOFrequency16MHz()
-{
-	BCSCTL1 = CALBC1_16MHZ;
-	DCOCTL = CALDCO_16MHZ;
-}
-
-/**
  * @brief Enable Interrupts
  */
-void _hal_enableInterrupts()
+void _hal_coreEnableInterrupts()
 {
 	_enable_interrupts();
 }
@@ -123,15 +123,15 @@ void _hal_enableInterrupts()
 /**
  * @brief Disable Interrupts
  */
-void _hal_disableInterrupts()
+void _hal_coreDisableInterrupts()
 {
 	_disable_interrupts();
 }
 
 /**
- * @brief Entry Low Power Mode 0
+ * @brief Entry Low Power Mode
  */
-void _hal_entryLowPowerMode0()
+void _hal_coreEntryLowPowerMode()
 {
 	__low_power_mode_0();
 }

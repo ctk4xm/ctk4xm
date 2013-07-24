@@ -41,8 +41,11 @@
  */
 void application()
 {
-	// Select Internal Clock
-	coreSelectInternalClock();
+	// Stop Watchdog Timer
+	coreStopWatchdogTimer();
+
+	// Select Internal Clock 1MHz
+	coreSelectInternalClock(1);
 }
 
 /**

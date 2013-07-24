@@ -28,47 +28,33 @@
 
 /**
  * @brief Select Internal Clock
+ * @param frequencyMHz MCU Frequency in MHz
  */
-void coreSelectInternalClock();
+void coreSelectInternalClock(uchar frequencyMHz);
+
+/**
+ * @brief Select External Clock
+ */
+void coreSelectExternalClock();
 
 /**
  * @brief Stop Watchdog Timer
  */
-void stopWatchdogTimer();
-
-/**
- * @brief Configure DCO Frequency
- */
-void configureDCOFrequency1MHz();
-
-/**
- * @brief Configure DCO Frequency 8 MHz
- */
-void configureDCOFrequency8MHz();
-
-/**
- * @brief Configure DCO Frequency 12 MHz
- */
-void configureDCOFrequency12MHz();
-
-/**
- * @brief Configure DCO Frequency 16 MHz
- */
-void configureDCOFrequency16MHz();
+void coreStopWatchdogTimer();
 
 /**
  * @brief Enable Interrupts
  */
-void enableInterrupts();
+void coreEnableInterrupts();
 
 /**
  * @brief Disable Interrupts
  */
-void disableInterrupts();
+void coreDisableInterrupts();
 
 /**
- * @brief Entry Low Power Mode 0
+ * @brief Entry Low Power Mode
  */
-void entryLowPowerMode0();
+void coreEntryLowPowerMode();
 
 #endif

@@ -26,72 +26,49 @@
 
 /**
  * @brief Select Internal Clock
+ * @param frequencyMHz MCU Frequency in MHz
  */
-void coreSelectInternalClock()
+void coreSelectInternalClock(uchar frequencyMHz)
 {
-	_hal_coreSelectInternalClock();
+	_hal_coreSelectInternalClock(frequencyMHz);
+}
+
+/**
+ * @brief Select External Clock
+ */
+void coreSelectExternalClock()
+{
+	_hal_coreSelectExternalClock();
 }
 
 /**
  * @brief Stop Watchdog Timer
  */
-void stopWatchdogTimer()
+void coreStopWatchdogTimer()
 {
-	_hal_stopWatchdogTimer();
-}
-
-/**
- * @brief Configure DCO Frequency 1 MHz
- */
-void configureDCOFrequency1MHz()
-{
-	_hal_configureDCOFrequency1MHz();
-}
-
-/**
- * @brief Configure DCO Frequency 8 MHz
- */
-void configureDCOFrequency8MHz()
-{
-	_hal_configureDCOFrequency8MHz();
-}
-
-/**
- * @brief Configure DCO Frequency 12 MHz
- */
-void configureDCOFrequency12MHz()
-{
-	_hal_configureDCOFrequency12MHz();
-}
-
-/**
- * @brief Configure DCO Frequency 16 MHz
- */
-void configureDCOFrequency16MHz()
-{
-	_hal_configureDCOFrequency16MHz();
+	_hal_coreStopWatchdogTimer();
 }
 
 /**
  * @brief Enable Interrupts
  */
-void enableInterrupts()
+void coreEnableInterrupts()
 {
-	_hal_enableInterrupts();
+	_hal_coreEnableInterrupts();
 }
 
 /**
  * @brief Disable Interrupts
  */
-void disableInterrupts()
+void coreDisableInterrupts()
 {
-	_hal_disableInterrupts();
+	_hal_coreDisableInterrupts();
 }
 
 /**
- * @brief Entry Low Power Mode 0
+ * @brief Entry Low Power Mode
  */
-void entryLowPowerMode0()
+void coreEntryLowPowerMode()
 {
-	_hal_entryLowPowerMode0();
+	_hal_coreEntryLowPowerMode();
 }

@@ -28,47 +28,33 @@
 
 /**
  * @brief Select Internal Clock
+ * @param frequencyMHz MCU Frequency in MHz
  */
-void _hal_coreSelectInternalClock();
+void _hal_coreSelectInternalClock(uchar frequencyMHz);
+
+/**
+ * @brief Select External Clock
+ */
+void _hal_coreSelectExternalClock();
 
 /**
  * @brief Stop Watchdog Timer
  */
-void _hal_stopWatchdogTimer();
-
-/**
- * @brief Configure DCO Frequency
- */
-void _hal_configureDCOFrequency1MHz();
-
-/**
- * @brief Configure DCO Frequency 8 MHz
- */
-void _hal_configureDCOFrequency8MHz();
-
-/**
- * @brief Configure DCO Frequency 12 MHz
- */
-void _hal_configureDCOFrequency12MHz();
-
-/**
- * @brief Configure DCO Frequency 16 MHz
- */
-void _hal_configureDCOFrequency16MHz();
+void _hal_coreStopWatchdogTimer();
 
 /**
  * @brief Enable Interrupts
  */
-void _hal_enableInterrupts();
+void _hal_coreEnableInterrupts();
 
 /**
  * @brief Disable Interrupts
  */
-void _hal_disableInterrupts();
+void _hal_coreDisableInterrupts();
 
 /**
- * @brief Entry Low Power Mode 0
+ * @brief Entry Low Power Mode
  */
-void _hal_entryLowPowerMode0();
+void _hal_coreEntryLowPowerMode();
 
 #endif
