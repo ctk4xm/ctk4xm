@@ -25,6 +25,8 @@
 #define DELAY_H_
 
 #include "config.h"
+#include "math.h"
+
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty
@@ -33,6 +35,6 @@
  * @param latitude1 Latitude Second Point
  * @param latitude1 Longitude Second Point
  */
-uint gpsVincentyDistance(uint latitude1, uint longitude1, uint latitude2, uint longitude2);
+float gpsVincentyDistance(uint latitude1, uint longitude1, uint latitude2, uint longitude2);
 
 #endif
