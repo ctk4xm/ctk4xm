@@ -21,8 +21,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DELAY_H_
-#define DELAY_H_
+#ifndef DELAY_HAL_H_
+#define DELAY_HAL_H_
 
 #include "config.h"
 
@@ -30,6 +30,6 @@
  * @brief Delay in Miliseconds
  * @param delayMs Milisecond Value
  */
-void delayMs(uint delayMs);
+void _hal_delayMs(uint delayMs);
 
 #endif

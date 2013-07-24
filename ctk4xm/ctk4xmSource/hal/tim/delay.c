@@ -1,5 +1,5 @@
 /**
- *  @file delay.h
+ *  @file delay.c
  *  @brief Module that allows delays
  *  @date 24/07/2013
  *  @version 1.0.0
@@ -21,15 +21,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DELAY_H_
-#define DELAY_H_
+#include "delay.h"
+#include "hal/delay.h"
 
-#include "config.h"
+#ifdef TIM
 
 /**
  * @brief Delay in Miliseconds
  * @param delayMs Milisecond Value
  */
-void delayMs(uint delayMs);
+void _hal_delayMs(uint delayMs)
+{
+	uint i = 0;
+
+	for(i = 0; i < delayMs; i++)
+	{
+		_delay_cycles(DCO_FREQ/1000);
+	}
+}
 
 #endif

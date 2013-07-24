@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xmApp.c
  *  @brief Application Program
- *  @date 10/07/2013
+ *  @date 24/07/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -36,6 +36,18 @@
  */
 #include "core.h"
 
+/**
+ * IO Include
+ */
+#include "io.h"
+
+/**
+ * Delay Include
+ */
+#include "delay.h"
+
+#define LED		&P2OUT,BIT0
+
 /*
  * @brief Application Program Loop
  */
@@ -46,6 +58,24 @@ void application()
 
 	// Select Internal Clock 1MHz
 	coreSelectInternalClock(1);
+
+	// Configura Pin Salida
+	ioDigitalOutput(LED);
+
+	while(1)
+	{
+		// Led ON
+		ioDigitalWrite(LED, ON);
+
+		// Delay 200ms
+		delayMs(200);
+
+		// Led OFF
+		ioDigitalWrite(LED, OFF);
+
+		// Delay 200ms
+		delayMs(200);
+	}
 }
 
 /**

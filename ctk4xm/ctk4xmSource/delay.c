@@ -1,7 +1,7 @@
 /**
  *  @file delay.c
  *  @brief Module that allows delays
- *  @date 10/07/2013
+ *  @date 24/07/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -22,6 +22,7 @@
  */
 
 #include "delay.h"
+#include "hal/delay.h"
 
 /**
  * @brief Delay in Miliseconds
@@ -29,24 +30,5 @@
  */
 void delayMs(uint delayMs)
 {
-	uint i = 0;
-
-	for(i = 0; i < delayMs; i++)
-	{
-		_delay_cycles(DCO_FREQ/1000);
-	}
-}
-
-/**
- * @brief Delay in Microseconds
- * @param delayUs Microsecond Value
- */
-void delayUs(uint delayUs)
-{
-	uint i = 0;
-
-	for(i = 0; i < delayUs; i++)
-	{
-		_delay_cycles(DCO_FREQ/1000000);
-	}
+	_hal_delayMs(delayMs);
 }
