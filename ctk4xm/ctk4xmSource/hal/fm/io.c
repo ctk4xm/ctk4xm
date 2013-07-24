@@ -75,7 +75,7 @@ const uchar OFFSETPxINPxREN = 7;
  * @param portDirection Port
  * @param pinMask Pin
  */
-void _hal_pinDigitalOutput(vuchar *portDirection, uchar pinMask)
+void _hal_ioDigitalOutput(vuchar *portDirection, uchar pinMask)
 {
 	// Output Pin
 	portDirection += OFFSETPxOUTPxDIR;
@@ -87,66 +87,10 @@ void _hal_pinDigitalOutput(vuchar *portDirection, uchar pinMask)
  * @param portDirection Port
  * @param pinMask Pin
  */
-void _hal_pinDigitalInput(vuchar *portDirection, uchar pinMask)
+void _hal_ioDigitalInput(vuchar *portDirection, uchar pinMask)
 {
 	// Input Pin
 	portDirection += OFFSETPxINPxDIR;
-	*portDirection &= ~(pinMask);
-}
-
-/**
- * @brief Enabled Pull-Up Pin
- * @param portDirection Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalEnabledPullUp(vuchar *portDirection, uchar pinMask)
-{
-	// Configure Pull Up
-	portDirection += OFFSETPxINPxOUT;
-	*portDirection |= pinMask;
-
-	// Enabled Pull-Up
-	portDirection += OFFSETPxINPxREN - OFFSETPxOUTPxDIR;
-	*portDirection |= pinMask;
-}
-
-/**
- * @brief Enabled Pull-Down Pin
- * @param portDirection Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalEnabledPullDown(vuchar *portDirection, uchar pinMask)
-{
-	// Configure Pull-Down
-	portDirection += OFFSETPxINPxOUT;
-	*portDirection &= ~(pinMask);
-
-	// Enable Pull-Down
-	portDirection += OFFSETPxINPxREN - OFFSETPxOUTPxDIR;
-	*portDirection |= pinMask;
-}
-
-/**
- * @brief Disabled Digital Pull-Up Pin
- * @param portDirection Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalDisabledPullUp(vuchar *portDirection, uchar pinMask)
-{
-	// Disabled Pull-Up
-	portDirection += OFFSETPxINPxREN;
-	*portDirection &= ~(pinMask);
-}
-
-/**
- * @brief Disabled Digital Pull-Down Pin
- * @param portDirection Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalDisabledPullDown(vuchar *portDirection, uchar pinMask)
-{
-	// Disabled Pull-Down
-	portDirection += OFFSETPxINPxREN;
 	*portDirection &= ~(pinMask);
 }
 
@@ -156,7 +100,7 @@ void _hal_pinDigitalDisabledPullDown(vuchar *portDirection, uchar pinMask)
  * @param pinMask Pin
  * @return Value Digital Read
  */
-uchar _hal_pinDigitalRead(vuchar *port, uchar pinMask)
+uchar _hal_ioDigitalRead(vuchar *port, uchar pinMask)
 {
 	uchar pinValue = 0;
 
@@ -169,36 +113,85 @@ uchar _hal_pinDigitalRead(vuchar *port, uchar pinMask)
 }
 
 /**
- * @brief Write Digital Pin On
+ * @brief Write Digital Pin
  * @param port Port
  * @param pinMask Pin
+ * @param level Level Pin
  */
-void _hal_pinDigitalWriteOn(vuchar *port, uchar pinMask)
+void _hal_ioDigitalWrite(vuchar *port, uchar pinMask, uchar level)
 {
-	// ON Pin
-	*port |= pinMask;
+	switch(level)
+	{
+		// OFF Pin
+		case 0:
+			*port &= ~(pinMask);
+			break;
+		// ON Pin
+		case 1:
+			*port |= pinMask;
+			break;
+		// Toggle Pin
+		case 2:
+			*port ^= pinMask;
+			break;
+	}
 }
 
 /**
- * @brief Write Digital Pin Off
- * @param port Port
+ * @brief Pull-Up Pin Configuration
+ * @param portDirection Port
  * @param pinMask Pin
+ * @param state Enabled or Disabled
  */
-void _hal_pinDigitalWriteOff(vuchar *port, uchar pinMask)
+void _hal_ioDigitalPullUp(vuchar *portDirection, uchar pinMask, uchar state)
 {
-	// OFF Pin
-	*port &= ~(pinMask);
+	switch(state)
+	{
+		// Disabled
+		case 0:
+			// Disabled Pull-Up
+			portDirection += OFFSETPxINPxREN;
+			*portDirection &= ~(pinMask);
+			break;
+		// Enabled
+		case 1:
+			// Configure Pull Up
+			portDirection += OFFSETPxINPxOUT;
+			*portDirection |= pinMask;
+
+			// Enabled Pull-Up
+			portDirection += OFFSETPxINPxREN - OFFSETPxOUTPxDIR;
+			*portDirection |= pinMask;
+			break;
+	}
 }
 
 /**
- * @brief Write Digital Toggle Pin
- * @param port Port
+ * @brief Pull-Down Pin Configuration
+ * @param portDirection Port
  * @param pinMask Pin
  */
-void _hal_pinDigitalWriteToggle(vuchar *port, uchar pinMask)
+void _hal_ioDigitalPullDown(vuchar *portDirection, uchar pinMask, uchar state)
 {
-	// Toggle Pin
-	*port ^= pinMask;
+	switch(state)
+	{
+		// Disabled
+		case 0:
+			// Disabled Pull-Down
+			portDirection += OFFSETPxINPxREN;
+			*portDirection &= ~(pinMask);
+			break;
+		// Enabled
+		case 1:
+			// Configure Pull-Down
+			portDirection += OFFSETPxINPxOUT;
+			*portDirection &= ~(pinMask);
+
+			// Enable Pull-Down
+			portDirection += OFFSETPxINPxREN - OFFSETPxOUTPxDIR;
+			*portDirection |= pinMask;
+			break;
+	}
 }
 
 /**
@@ -206,181 +199,76 @@ void _hal_pinDigitalWriteToggle(vuchar *port, uchar pinMask)
  * @param port Port
  * @param pinMask Pin
  */
-void _hal_pinSelectIOFunction(vuchar *port, uchar pinMask)
+void _hal_ioSelectFunction(vuchar *port, uchar pinMask, uchar function)
 {
-	port += OFFSETPxOUTPxSEL;
-	*port &= ~(pinMask);
-	port += OFFSETPxSELPxSEL2;
-	*port &= ~(pinMask);
-}
-
-/**
- * @brief Select Primary Function Pin
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinSelectPrimaryFunction(vuchar *port, uchar pinMask)
-{
-	port += OFFSETPxOUTPxSEL;
-	*port |= pinMask;
-	port += OFFSETPxSELPxSEL2;
-	*port &= ~(pinMask);
-}
-
-/**
- * @brief Select Secondary Function Pin
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinSelectSecondaryFunction(vuchar *port, uchar pinMask)
-{
-	port += OFFSETPxOUTPxSEL;
-	*port |= pinMask;
-	port += OFFSETPxSELPxSEL2;
-	*port |= pinMask;
-}
-
-/**
- * @brief Wait Level Pin int pinPulsador
- * @param port Port
- * @param pinNo Pin
- * @param typePulse Pulse Type
- * @param typeFlanco Type Flanco
- * @param timeOff Time Off
- * @param timeOn Time On
- * @return Value Digital Read
- */
-uchar _hal_waitLevelPin(vuchar *port, uchar pinNo, uchar typePulse, uchar typeFlanco, uchar timeOff, uchar timeOn)
-{
-	uchar statusLevel = 0;
-	uchar pinReference = 0;
-	uchar timeOffCounter = 0;
-	uchar timeOnCounter = 0;
-
-	// Set pin Reference
-	if(typePulse == 0)
-	{
-		pinReference = 0;
-	}
-	else
-	{
-		pinReference = 1;
-	}
-	
-	// Wait first flanco
-	while(1)
-	{
-		if(_hal_pinDigitalRead(port,pinNo) != pinReference)
+	switch(function)
 		{
-			// Espera por el tiempo antirebote
-			delayMs(10);
-
-			if(_hal_pinDigitalRead(port,pinNo) != pinReference)
-			{
-				statusLevel = 1;
+			// Primary
+			case 0:
+				port += OFFSETPxOUTPxSEL;
+				*port |= pinMask;
+				port += OFFSETPxSELPxSEL2;
+				*port &= ~(pinMask);
 				break;
-			}
-	    }
-		else
-		{
-			// Si el contador no se ha presionado cuenta el tiempo Off
-			if(timeOffCounter < timeOff)
-			{
-				timeOffCounter++;
-				delayMs(1);
-			}
-			else
-			{
+			// Secondary
+			case 1:
+				port += OFFSETPxOUTPxSEL;
+				*port |= pinMask;
+				port += OFFSETPxSELPxSEL2;
+				*port |= pinMask;
 				break;
-			}  
+			// IO
+			case 2:
+				port += OFFSETPxOUTPxSEL;
+				*port &= ~(pinMask);
+				port += OFFSETPxSELPxSEL2;
+				*port &= ~(pinMask);
+				break;
 		}
-	}
-	
-	// Pregunta si se vencio el tiempo Off
-	if(timeOffCounter < timeOff)
+}
+
+/**
+ * @brief Interrupt Pin Configuration
+ * @param port Port
+ * @param pinMask Pin
+ */
+void _hal_ioDigitalInterrupt(vuchar *port, uchar pinMask, uchar state)
+{
+	switch(state)
 	{
-		if(typeFlanco == 1)
-		{
-			// Espera por la aparición del primer flanco
-			while(1)
-			{
-				if(_hal_pinDigitalRead(port,pinNo) == pinReference)
-				{
-					// Espera por el tiempo antirebote
-					delayMs(10);
-
-					if(_hal_pinDigitalRead(port,pinNo) == pinReference)
-					{
-						statusLevel = 1;
-						break;
-					}
-				}
-				else
-				{
-					// Si el contador no se ha presionado cuenta el tiempo Off
-					if(timeOnCounter < timeOn)
-					{
-						timeOnCounter++;
-						delayMs(1);
-					}
-					else
-					{
-						statusLevel = 0;
-						break;
-					}						
-				}  
-			}
-		}
+		// Disabled
+		case 0:
+			port += OFFSETPxINPxIE;
+			*port &= ~(pinMask);
+			break;
+		// Enabled
+		case 1:
+			port += OFFSETPxINPxIE;
+			*port |= pinMask;
+			break;
 	}
-	else
+}
+
+/**
+ * @brief Interrupt Transition Pin Configuration
+ * @param port Port
+ * @param pinMask Pin
+ */
+void _hal_ioDigitalSelectInterruptTransition(vuchar *port, uchar pinMask, uchar transition)
+{
+	switch(transition)
 	{
-		statusLevel = 0;
+		// Low to High
+		case 0:
+			port += OFFSETPxINPxIE;
+			*port &= ~(pinMask);
+			break;
+		// High to Low
+		case 1:
+			port += OFFSETPxINPxIES;
+			*port |= pinMask;
+			break;
 	}
-	return statusLevel;
-}
-
-/**
- * @brief Enable Pin Interrupt
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalEnableInterrupt(vuchar *port, uchar pinMask)
-{
-	port += OFFSETPxINPxIE;
-	*port |= pinMask;
-}
-
-/**
- * @brief Disable Pin Interrupt
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalDisableInterrupt(vuchar *port, uchar pinMask)
-{
-	port += OFFSETPxINPxIE;
-	*port &= ~(pinMask);
-}
-
-/**
- * @brief Enable Pin High Low Transition Interrupt
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalSelectHighLowTransitionInterrupt(vuchar *port, uchar pinMask)
-{
-	port += OFFSETPxINPxIES;
-	*port |= pinMask;
-}
-
-/**
- * @brief Enable Pin Low High Transition Interrupt
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalSelectLowHighTransitionInterrupt(vuchar *port, uchar pinMask)
-{
-	port += OFFSETPxINPxIE;
-	*port &= ~(pinMask);
 }
 
 /**
@@ -389,7 +277,7 @@ void _hal_pinDigitalSelectLowHighTransitionInterrupt(vuchar *port, uchar pinMask
  * @param pinMask Pin
  * @return Value Pending Interrupt
  */
-uint _hal_pinDigitalIsPendingInterrupt(vuchar *port, uchar pinMask)
+uint _hal_ioDigitalIsPendingInterrupt(vuchar *port, uchar pinMask)
 {
 	uchar isPendingInterrupt = 0;
 
@@ -404,7 +292,7 @@ uint _hal_pinDigitalIsPendingInterrupt(vuchar *port, uchar pinMask)
  * @param port Port
  * @param pinMask Pin
  */
-void _hal_pinDigitalClearPendingInterrupt(vuchar *port, uchar pinMask)
+void _hal_ioDigitalClearPendingInterrupt(vuchar *port, uchar pinMask)
 {
 	port += OFFSETPxINPxIFG;
 	*port &= ~(pinMask);

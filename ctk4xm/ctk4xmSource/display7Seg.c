@@ -70,27 +70,27 @@ void display7SegInit()
 	uchar i = 0;
 
 	// Configure Output Display 7-Seg Pins
-	pinDigitalWriteOn(DISPLAY7SEG_A);
-	pinDigitalOutput(DISPLAY7SEG_A);
-	pinDigitalWriteOn(DISPLAY7SEG_B);
-	pinDigitalOutput(DISPLAY7SEG_B);
-	pinDigitalWriteOn(DISPLAY7SEG_C);
-	pinDigitalOutput(DISPLAY7SEG_C);
-	pinDigitalWriteOn(DISPLAY7SEG_D);
-	pinDigitalOutput(DISPLAY7SEG_D);
-	pinDigitalWriteOn(DISPLAY7SEG_E);
-	pinDigitalOutput(DISPLAY7SEG_E);
-	pinDigitalWriteOn(DISPLAY7SEG_F);
-	pinDigitalOutput(DISPLAY7SEG_F);
-	pinDigitalWriteOn(DISPLAY7SEG_G);
-	pinDigitalOutput(DISPLAY7SEG_G);
+	ioDigitalWrite(DISPLAY7SEG_A, ON);
+	ioDigitalOutput(DISPLAY7SEG_A);
+	ioDigitalWrite(DISPLAY7SEG_B, ON);
+	ioDigitalOutput(DISPLAY7SEG_B);
+	ioDigitalWrite(DISPLAY7SEG_C, ON);
+	ioDigitalOutput(DISPLAY7SEG_C);
+	ioDigitalWrite(DISPLAY7SEG_D, ON);
+	ioDigitalOutput(DISPLAY7SEG_D);
+	ioDigitalWrite(DISPLAY7SEG_E, ON);
+	ioDigitalOutput(DISPLAY7SEG_E);
+	ioDigitalWrite(DISPLAY7SEG_F, ON);
+	ioDigitalOutput(DISPLAY7SEG_F);
+	ioDigitalWrite(DISPLAY7SEG_G, ON);
+	ioDigitalOutput(DISPLAY7SEG_G);
 
 	// Clock Off
-	pinDigitalWriteOff(DISPLAY7SEG_SRCLK);
-	pinDigitalOutput(DISPLAY7SEG_SRCLK);
+	ioDigitalWrite(DISPLAY7SEG_SRCLK, OFF);
+	ioDigitalOutput(DISPLAY7SEG_SRCLK);
 	// Data On
-	pinDigitalWriteOn(DISPLAY7SEG_SRDAT);
-	pinDigitalOutput(DISPLAY7SEG_SRDAT);
+	ioDigitalWrite(DISPLAY7SEG_SRDAT, ON);
+	ioDigitalOutput(DISPLAY7SEG_SRDAT);
 
 	// Init display counter
 	displayCounter = 0;
@@ -101,8 +101,8 @@ void display7SegInit()
 	// Off All Displays
 	for(i = 0; i < MAX_DISPLAYS; i++)
 	{
-		pinDigitalWriteOn(DISPLAY7SEG_SRCLK);
-		pinDigitalWriteOff(DISPLAY7SEG_SRCLK);
+		ioDigitalWrite(DISPLAY7SEG_SRCLK, ON);
+		ioDigitalWrite(DISPLAY7SEG_SRCLK, OFF);
 	}
 
 	// Display Buffer Clear
@@ -147,13 +147,13 @@ void display7SegWriteBuffer(uchar bufferPosition, uchar data)
 void display7SegUpdate()
 {
 	// Clear Data Row
-	pinDigitalWriteOn(DISPLAY7SEG_A);
-	pinDigitalWriteOn(DISPLAY7SEG_B);
-	pinDigitalWriteOn(DISPLAY7SEG_C);
-	pinDigitalWriteOn(DISPLAY7SEG_D);
-	pinDigitalWriteOn(DISPLAY7SEG_E);
-	pinDigitalWriteOn(DISPLAY7SEG_F);
-	pinDigitalWriteOn(DISPLAY7SEG_G);
+	ioDigitalWrite(DISPLAY7SEG_A, ON);
+	ioDigitalWrite(DISPLAY7SEG_B, ON);
+	ioDigitalWrite(DISPLAY7SEG_C, ON);
+	ioDigitalWrite(DISPLAY7SEG_D, ON);
+	ioDigitalWrite(DISPLAY7SEG_E, ON);
+	ioDigitalWrite(DISPLAY7SEG_F, ON);
+	ioDigitalWrite(DISPLAY7SEG_G, ON);
 
 	// Verify Scroll On/Off and calculate Buffer Offset
 	if(scrollOnDisplay7Seg)
@@ -203,16 +203,16 @@ void display7SegUpdate()
 void display7SegSelectDisplay(uchar display)
 {
 	// On Column
-	pinDigitalWriteOn(DISPLAY7SEG_SRDAT);
+	ioDigitalWrite(DISPLAY7SEG_SRDAT, ON);
 
 	if(display == 1)
 	{
-		pinDigitalWriteOff(DISPLAY7SEG_SRDAT);
+		ioDigitalWrite(DISPLAY7SEG_SRDAT, OFF);
 	}
 
 	// Clock 74HC164
-	pinDigitalWriteOn(DISPLAY7SEG_SRCLK);
-	pinDigitalWriteOff(DISPLAY7SEG_SRCLK);
+	ioDigitalWrite(DISPLAY7SEG_SRCLK, ON);
+	ioDigitalWrite(DISPLAY7SEG_SRCLK, OFF);
 }
 
 /**
@@ -224,31 +224,31 @@ void display7SegSetSegments(uchar dataSegments)
 	// Set Data Row
 	if((dataSegments & BIT0) == 0)
 	{
-		pinDigitalWriteOff(DISPLAY7SEG_A);
+		ioDigitalWrite(DISPLAY7SEG_A, OFF);
 	}
 	if((dataSegments & BIT1) == 0)
 	{
-		pinDigitalWriteOff(DISPLAY7SEG_B);
+		ioDigitalWrite(DISPLAY7SEG_B, OFF);
 	}
 	if((dataSegments & BIT2) == 0)
 	{
-		pinDigitalWriteOff(DISPLAY7SEG_C);
+		ioDigitalWrite(DISPLAY7SEG_C, OFF);
 	}
 	if((dataSegments & BIT3) == 0)
 	{
-		pinDigitalWriteOff(DISPLAY7SEG_D);
+		ioDigitalWrite(DISPLAY7SEG_D, OFF);
 	}
 	if((dataSegments & BIT4) == 0)
 	{
-		pinDigitalWriteOff(DISPLAY7SEG_E);
+		ioDigitalWrite(DISPLAY7SEG_E, OFF);
 	}
 	if((dataSegments & BIT5) == 0)
 	{
-		pinDigitalWriteOff(DISPLAY7SEG_F);
+		ioDigitalWrite(DISPLAY7SEG_F, OFF);
 	}
 	if((dataSegments & BIT6) == 0)
 	{
-		pinDigitalWriteOff(DISPLAY7SEG_G);
+		ioDigitalWrite(DISPLAY7SEG_G, OFF);
 	}
 }
 

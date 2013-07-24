@@ -25,49 +25,20 @@
 #define IO_HAL_H_
 
 #include "config.h"
-#include "delay.h"
 
 /**
  * @brief Configure Digital Output Pin
  * @param portDirection Port
  * @param pinMask Pin
  */
-void _hal_pinDigitalOutput(vuchar *portDirection, uchar pinMask);
+void _hal_ioDigitalOutput(vuchar *portDirection, uchar pinMask);
 
 /**
  * @brief Configure Digital Input Pin
  * @param portDirection Port
  * @param pinMask Pin
  */
-void _hal_pinDigitalInput(vuchar *portDirection, uchar pinMask);
-
-/**
- * @brief Enabled Pull-Up Pin
- * @param portDirection Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalEnabledPullUp(vuchar *portDirection, uchar pinMask);
-
-/**
- * @brief Enabled Pull-Down Pin
- * @param portDirection Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalEnabledPullDown(vuchar *portDirection, uchar pinMask);
-
-/**
- * @brief Disabled Digital Pull-Up Pin
- * @param portDirection Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalDisabledPullUp(vuchar *portDirection, uchar pinMask);
-
-/**
- * @brief Disabled Digital Pull-Down Pin
- * @param portDirection Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalDisabledPullDown(vuchar *portDirection, uchar pinMask);
+void _hal_ioDigitalInput(vuchar *portDirection, uchar pinMask);
 
 /**
  * @brief Read Digital Pin
@@ -75,89 +46,51 @@ void _hal_pinDigitalDisabledPullDown(vuchar *portDirection, uchar pinMask);
  * @param pinMask Pin
  * @return Value Digital Read
  */
-uchar _hal_pinDigitalRead(vuchar *port, uchar pinMask);
+uchar _hal_ioDigitalRead(vuchar *port, uchar pinMask);
 
 /**
- * @brief Write Digital Pin On
+ * @brief Write Digital Pin
  * @param port Port
  * @param pinMask Pin
+ * @param level Level Pin
  */
-void _hal_pinDigitalWriteOn(vuchar *port, uchar pinMask);
+void _hal_ioDigitalWrite(vuchar *port, uchar pinMask, uchar level);
 
 /**
- * @brief Write Digital Pin Off
- * @param port Port
+ * @brief Pull-Up Pin Configuration
+ * @param portDirection Port
  * @param pinMask Pin
+ * @param state Enabled or Disabled
  */
-void _hal_pinDigitalWriteOff(vuchar *port, uchar pinMask);
+void _hal_ioDigitalPullUp(vuchar *portDirection, uchar pinMask, uchar state);
 
 /**
- * @brief Write Digital Toggle Pin
- * @param port Port
+ * @brief Pull-Down Pin Configuration
+ * @param portDirection Port
  * @param pinMask Pin
  */
-void _hal_pinDigitalWriteToggle(vuchar *port, uchar pinMask);
+void _hal_ioDigitalPullDown(vuchar *portDirection, uchar pinMask, uchar state);
 
 /**
  * @brief Select I/O Function Pin
  * @param port Port
  * @param pinMask Pin
  */
-void _hal_pinSelectIOFunction(vuchar *port, uchar pinMask);
+void _hal_ioSelectFunction(vuchar *port, uchar pinMask, uchar function);
 
 /**
- * @brief Select Primary Function Pin
+ * @brief Interrupt Pin Configuration
  * @param port Port
  * @param pinMask Pin
  */
-void _hal_pinSelectPrimaryFunction(vuchar *port, uchar pinMask);
+void _hal_ioDigitalInterrupt(vuchar *port, uchar pinMask, uchar state);
 
 /**
- * @brief Select Secondary Function Pin
+ * @brief Interrupt Transition Pin Configuration
  * @param port Port
  * @param pinMask Pin
  */
-void _hal_pinSelectSecondaryFunction(vuchar *port, uchar pinMask);
-
-/**
- * @brief Wait Level Pin int pinPulsador
- * @param port Port
- * @param pinNo Pin
- * @param typePulse Pulse Type
- * @param typeFlanco Type Flanco
- * @param timeOff Time Off
- * @param timeOn Time On
- * @return Value Digital Read
- */
-uchar _hal_waitLevelPin(vuchar *port, uchar pinNo, uchar typePulse, uchar typeFlanco, uchar timeOff, uchar timeOn);
-
-/**
- * @brief Enable Pin Interrupt
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalEnableInterrupt(vuchar *port, uchar pinMask);
-
-/**
- * @brief Disable Pin Interrupt
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalDisableInterrupt(vuchar *port, uchar pinMask);
-
-/**
- * @brief Enable Pin High Low Transition Interrupt
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalSelectHighLowTransitionInterrupt(vuchar *port, uchar pinMask);
-
-/**
- * @brief Enable Pin Low High Transition Interrupt
- * @param port Port
- * @param pinMask Pin
- */
-void _hal_pinDigitalSelectLowHighTransitionInterrupt(vuchar *port, uchar pinMask);
+void _hal_ioDigitalSelectInterruptTransition(vuchar *port, uchar pinMask, uchar transition);
 
 /**
  * @brief Test Pin Pending Interrupt
@@ -165,13 +98,13 @@ void _hal_pinDigitalSelectLowHighTransitionInterrupt(vuchar *port, uchar pinMask
  * @param pinMask Pin
  * @return Value Pending Interrupt
  */
-uint _hal_pinDigitalIsPendingInterrupt(vuchar *port, uchar pinMask);
+uint _hal_ioDigitalIsPendingInterrupt(vuchar *port, uchar pinMask);
 
 /**
  * @brief Clear Pin Pending Interrupt
  * @param port Port
  * @param pinMask Pin
  */
-void _hal_pinDigitalClearPendingInterrupt(vuchar *port, uchar pinMask);
+void _hal_ioDigitalClearPendingInterrupt(vuchar *port, uchar pinMask);
 
 #endif
