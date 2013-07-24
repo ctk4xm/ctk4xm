@@ -1,7 +1,7 @@
 /**
  *  @file display7Seg.c
  *  @brief Module that allows controls 7-Seg Displays
- *  @date 10/07/2013
+ *  @date 24/07/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -22,6 +22,7 @@
  */
 
 #include "display7Seg.h"
+#include "timer.h"
 
 /**
  * Display 7-Seg Font
@@ -109,10 +110,13 @@ void display7SegInit()
 	display7SegBufferClear();
 
 	// Set Count 2000 Cycles at 1us = 2ms
-	TACCR0 = 2000;
+	timerSetCount(2000);
 
-	// Configure Timer Source SMCLK, Up Mode
-	TACTL = TASSEL1 | MC0 | TACLR | TAIE;
+	// Enable Timer Interrupt
+	timerInterruptEnable();
+
+	// Arranca el Timer
+	timerStart();
 }
 
 /**

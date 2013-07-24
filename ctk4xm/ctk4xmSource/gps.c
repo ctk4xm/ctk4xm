@@ -1,7 +1,7 @@
 /**
  *  @file gps.c
  *  @brief Module that allows work GPS
- *  @date 13/07/2013
+ *  @date 24/07/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -77,9 +77,9 @@ float gpsVincentyDistance(uint latitude1, uint longitude1, uint latitude2, uint 
 	}
 	while (abs(lambda-lambdaP) > 1e-12 && --iterLimit>0);
 
-	if (iterLimit==0)
+	if (iterLimit == 0)
 	{
-		return NAN;  			// Formula failed to converge
+		// return NAN;  			// Formula failed to converge
 	}
 
 	float uSq = cosSqAlpha * (a*a - b*b) / (b*b);

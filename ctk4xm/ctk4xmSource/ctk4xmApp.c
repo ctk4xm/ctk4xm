@@ -46,7 +46,11 @@
  */
 #include "delay.h"
 
-#define LED		&P2OUT,BIT0
+#ifdef TIM
+	#define LED		&P2OUT,BIT0
+#else
+	#define LED		&PTBD,BIT0
+#endif
 
 /*
  * @brief Application Program Loop

@@ -1,7 +1,7 @@
 /**
  *  @file timer.c
  *  @brief Module that drive Timer
- *  @date 13/07/2013
+ *  @date 24/07/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -25,19 +25,19 @@
 #include "hal/timer.h"
 
 /**
- * @brief Init Timer
+ * @brief Set Count Timer
  */
-void timerInit()
+void timerSetCount(uint valueCounter)
 {
-	_hal_timerInit();
+	_hal_timerSetCount(valueCounter);
 }
 
 /**
  * @brief Clear and Enabled Timer Interrupt
  */
-void timerEnableInterrupt()
+void timerInterruptEnable()
 {
-	_hal_timerEnableInterrupt();
+	_hal_timerInterruptEnable();
 }
 
 /**
@@ -49,7 +49,7 @@ void timerStart()
 }
 
 /**
- * @brief Init Timer
+ * @brief Stop Timer
  */
 void timerStop()
 {

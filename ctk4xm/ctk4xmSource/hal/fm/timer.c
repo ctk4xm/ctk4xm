@@ -1,7 +1,7 @@
 /**
  *  @file timer.c
  *  @brief Module that drive Timer - Freescale Microcontroller
- *  @date 13/07/2013
+ *  @date 24/07/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -26,20 +26,19 @@
 #ifdef FREESCALE
 
 /**
- * @brief Init Timer
+ * @brief Set Count Timer
  */
-void _hal_timerInit()
+void _hal_timerSetCount(uint valueCounter)
 {
-	TACTL = TASSEL1|ID1|ID0|MC1|TACLR;
+
 }
 
 /**
  * @brief Clear and Enabled Timer Interrupt
  */
-void _hal_timerEnableInterrupt()
+void _hal_timerInterruptEnable()
 {
-	TACTL &= ~(TAIFG);
-	TACTL |= TAIE;
+
 }
 
 /**
@@ -51,7 +50,7 @@ void _hal_timerStart()
 }
 
 /**
- * @brief Init Timer
+ * @brief Stop Timer
  */
 void _hal_timerStop()
 {

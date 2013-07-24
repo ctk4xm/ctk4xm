@@ -1,7 +1,7 @@
 /**
  *  @file core.c
  *  @brief General CTK4XM API Specifications - Freescale Microcontroller
- *  @date 10/07/2013
+ *  @date 24/07/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -109,7 +109,7 @@ void _hal_coreSelectExternalClock();
  */
 void _hal_coreStopWatchdogTimer()
 {
-	WDTCTL = WDTPW + WDTHOLD;
+
 }
 
 /**
@@ -117,7 +117,7 @@ void _hal_coreStopWatchdogTimer()
  */
 void _hal_coreEnableInterrupts()
 {
-	_enable_interrupts();
+
 }
 
 /**
@@ -125,7 +125,7 @@ void _hal_coreEnableInterrupts()
  */
 void _hal_coreDisableInterrupts()
 {
-	_disable_interrupts();
+
 }
 
 /**
@@ -133,7 +133,7 @@ void _hal_coreDisableInterrupts()
  */
 void _hal_coreEntryLowPowerMode()
 {
-	__low_power_mode_0();
+
 }
 
 #endif

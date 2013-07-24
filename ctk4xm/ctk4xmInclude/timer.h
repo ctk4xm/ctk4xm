@@ -1,7 +1,7 @@
 /**
  *  @file timere.h
  *  @brief Module that drive Timer
- *  @date 13/07/2013
+ *  @date 24/07/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -27,14 +27,14 @@
 #include "config.h"
 
 /**
- * @brief Init Timer
+ * @brief Set Count Timer
  */
-void timerInit();
+void timerSetCount(uint valueCounter);
 
 /**
  * @brief Clear and Enabled Timer Interrupt
  */
-void timerEnableInterrupt();
+void timerInterruptEnable();
 
 /**
  * @brief Init Timer
@@ -42,7 +42,7 @@ void timerEnableInterrupt();
 void timerStart();
 
 /**
- * @brief Init Timer
+ * @brief Stop Timer
  */
 void timerStop();
 
