@@ -47,7 +47,7 @@
 #include "delay.h"
 
 #ifdef TIM
-	#define LED		&P2OUT,BIT0
+	#define LED		&P1OUT,BIT0
 #else
 	#define LED		&PTBD,BIT0
 #endif
