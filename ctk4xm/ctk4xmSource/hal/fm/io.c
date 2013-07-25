@@ -25,50 +25,52 @@
 
 #ifdef FREESCALE
 
-/**
- * PxOUT to PxDIR Register Offset
- */
-const uchar OFFSETPxOUTPxDIR = 1;
+// 	PTAD 	0x00000000
+//	PTADD	0x00000001
+//	PTAPE	0x00001840
+//	PTASE	0x00001841
+//	PTADS	0x00001842
+//	PTASC	0x00001844
+//	PTAPS	0x00001845
+//	PTAES	0x00001846
+
+//	PTBD	0x00000002
+//	PTBDD	0x00000003
+//	PTBPE	0x00001848
+//	PTBSE	0x00001849
+//	PTBDS	0x0000184A
+//	PTBSC	0x0000184C
+//	PTBPS	0x0000184D
+//	PTBES	0x0000184E
+
+//	PTCD	0x00000004
+//	PTCDD	0x00000005
+//	PTCPE	0x00001850
+//	PTCSE	0x00001851
+//	PTCDS	0x00001852
+//	PTCSC	N/A
+//	PTCPS	N/A
+//	PTCES	N/A
 
 /**
- * PxOUT to PxSEL Register Offset
+ * PTxD to PTxDD Offset
  */
-const uchar OFFSETPxOUTPxSEL = 5;
+const uchar OFFSET_PTxD_PTxDD = 1;
 
 /**
- * PxSEL to PxSEL2 Register Offset
+ * Base Direction PTxPE
  */
-const uchar OFFSETPxSELPxSEL2 = 27;
+const uchar BASE_DIR__PTxPE = 0x00001840;
 
 /**
- * PxINP to PxOUT Register Offset
+ * PTxPE to PTxPS Offset
  */
-const uchar OFFSETPxINPxOUT = 1;
+const uchar OFFSET_PTxPE__PTxPS = 5;
 
 /**
- * PxINP to PxDIR Register Offset
+ * PTxPE to PTxES Offset
  */
-const uchar OFFSETPxINPxDIR = 2;
-
-/**
- * PxINP to PxIFG Register Offset
- */
-const uchar OFFSETPxINPxIFG = 3;
-
-/**
- * PxINP to PxIES Register Offset
- */
-const uchar OFFSETPxINPxIES = 4;
-
-/**
- * PxINP to PxIE Register Offset
- */
-const uchar OFFSETPxINPxIE = 5;
-
-/**
- * PxINP to PxREN Register Offset
- */
-const uchar OFFSETPxINPxREN = 7;
+const uchar OFFSET_PTxPE__PTxES = 6;
 
 /**
  * @brief Configure Digital Output Pin
@@ -78,7 +80,7 @@ const uchar OFFSETPxINPxREN = 7;
 void _hal_ioDigitalOutput(vuchar *portDirection, uchar pinMask)
 {
 	// Output Pin
-	portDirection += OFFSETPxOUTPxDIR;
+	portDirection += OFFSET_PTxD_PTxDD;
 	*portDirection |= pinMask;
 }
 
@@ -90,7 +92,7 @@ void _hal_ioDigitalOutput(vuchar *portDirection, uchar pinMask)
 void _hal_ioDigitalInput(vuchar *portDirection, uchar pinMask)
 {
 	// Input Pin
-	portDirection += OFFSETPxINPxDIR;
+	portDirection += OFFSET_PTxD_PTxDD;
 	*portDirection &= ~(pinMask);
 }
 
@@ -145,23 +147,24 @@ void _hal_ioDigitalWrite(vuchar *port, uchar pinMask, uchar level)
  */
 void _hal_ioDigitalPullUp(vuchar *portDirection, uchar pinMask, uchar state)
 {
+	// Get Direction PTxPE
+	portDirection = (portDirection * 4) + DIR_BASE_PTxPE;
+
 	switch(state)
 	{
 		// Disabled
 		case 0:
 			// Disabled Pull-Up
-			portDirection += OFFSETPxINPxREN;
 			*portDirection &= ~(pinMask);
 			break;
 		// Enabled
 		case 1:
 			// Configure Pull Up
-			portDirection += OFFSETPxINPxOUT;
 			*portDirection |= pinMask;
 
 			// Enabled Pull-Up
-			portDirection += OFFSETPxINPxREN - OFFSETPxOUTPxDIR;
-			*portDirection |= pinMask;
+			portDirection += OFFSET_PTxPE__PTxES;
+			*portDirection &= ~(pinMask);
 			break;
 	}
 }
@@ -173,22 +176,23 @@ void _hal_ioDigitalPullUp(vuchar *portDirection, uchar pinMask, uchar state)
  */
 void _hal_ioDigitalPullDown(vuchar *portDirection, uchar pinMask, uchar state)
 {
+	// Get Direction PTxPE
+	portDirection = (portDirection * 4) + DIR_BASE_PTxPE;
+
 	switch(state)
 	{
 		// Disabled
 		case 0:
 			// Disabled Pull-Down
-			portDirection += OFFSETPxINPxREN;
 			*portDirection &= ~(pinMask);
 			break;
 		// Enabled
 		case 1:
-			// Configure Pull-Down
-			portDirection += OFFSETPxINPxOUT;
-			*portDirection &= ~(pinMask);
+			// Configure Pull Up
+			*portDirection |= pinMask;
 
-			// Enable Pull-Down
-			portDirection += OFFSETPxINPxREN - OFFSETPxOUTPxDIR;
+			// Enabled Pull-Up
+			portDirection += OFFSET_PTxPE__PTxES;
 			*portDirection |= pinMask;
 			break;
 	}
@@ -201,30 +205,7 @@ void _hal_ioDigitalPullDown(vuchar *portDirection, uchar pinMask, uchar state)
  */
 void _hal_ioSelectFunction(vuchar *port, uchar pinMask, uchar function)
 {
-	switch(function)
-		{
-			// Primary
-			case 0:
-				port += OFFSETPxOUTPxSEL;
-				*port |= pinMask;
-				port += OFFSETPxSELPxSEL2;
-				*port &= ~(pinMask);
-				break;
-			// Secondary
-			case 1:
-				port += OFFSETPxOUTPxSEL;
-				*port |= pinMask;
-				port += OFFSETPxSELPxSEL2;
-				*port |= pinMask;
-				break;
-			// IO
-			case 2:
-				port += OFFSETPxOUTPxSEL;
-				*port &= ~(pinMask);
-				port += OFFSETPxSELPxSEL2;
-				*port &= ~(pinMask);
-				break;
-		}
+
 }
 
 /**
@@ -234,16 +215,17 @@ void _hal_ioSelectFunction(vuchar *port, uchar pinMask, uchar function)
  */
 void _hal_ioDigitalInterrupt(vuchar *port, uchar pinMask, uchar state)
 {
+	// Get Direction PTxPS
+	portDirection = (portDirection * 4) + DIR_BASE_PTxPE + OFFSET_PTxPE__PTxPS;
+
 	switch(state)
 	{
 		// Disabled
 		case 0:
-			port += OFFSETPxINPxIE;
 			*port &= ~(pinMask);
 			break;
 		// Enabled
 		case 1:
-			port += OFFSETPxINPxIE;
 			*port |= pinMask;
 			break;
 	}
@@ -256,19 +238,7 @@ void _hal_ioDigitalInterrupt(vuchar *port, uchar pinMask, uchar state)
  */
 void _hal_ioDigitalSelectInterruptTransition(vuchar *port, uchar pinMask, uchar transition)
 {
-	switch(transition)
-	{
-		// Low to High
-		case 0:
-			port += OFFSETPxINPxIE;
-			*port &= ~(pinMask);
-			break;
-		// High to Low
-		case 1:
-			port += OFFSETPxINPxIES;
-			*port |= pinMask;
-			break;
-	}
+
 }
 
 /**
