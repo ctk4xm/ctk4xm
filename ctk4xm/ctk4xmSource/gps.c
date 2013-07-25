@@ -42,6 +42,7 @@ float gpsVincentyDistance(uint latitude1, uint longitude1, uint latitude2, uint 
 	//float U1 = atan((1-f) * tan(lat1.toRad()));
 	//float U2 = Math.atan((1-f) * Math.tan(lat2.toRad()));
 	float cosSigma, sigma, sinAlpha, cosSqAlpha, cos2SigmaM, sinLambda, sinSigma, cosLambda, c, lambdaP;
+	float uSq, A, B, deltaSigma, s;
 
 	float sinU1 = sin(U1);
 	float cosU1 = cos(U1);
@@ -82,11 +83,11 @@ float gpsVincentyDistance(uint latitude1, uint longitude1, uint latitude2, uint 
 		// return NAN;  			// Formula failed to converge
 	}
 
-	float uSq = cosSqAlpha * (a*a - b*b) / (b*b);
-	float A = 1 + uSq/16384*(4096 + uSq*(-768 + uSq*(320 - 175*uSq)));
-	float B = uSq/1024 * (256 + uSq*(-128 + uSq*(74 - 47*uSq)));
-	float deltaSigma = B*sinSigma*(cos2SigmaM + B/4*(cosSigma*(-1 + 2*cos2SigmaM*cos2SigmaM) -B/6*cos2SigmaM*(-3 + 4*sinSigma*sinSigma)*(-3 + 4*cos2SigmaM*cos2SigmaM)));
-	float s = b*A*(sigma - deltaSigma);
+	uSq = cosSqAlpha * (a*a - b*b) / (b*b);
+	A = 1 + uSq/16384*(4096 + uSq*(-768 + uSq*(320 - 175*uSq)));
+	B = uSq/1024 * (256 + uSq*(-128 + uSq*(74 - 47*uSq)));
+	deltaSigma = B*sinSigma*(cos2SigmaM + B/4*(cosSigma*(-1 + 2*cos2SigmaM*cos2SigmaM) -B/6*cos2SigmaM*(-3 + 4*sinSigma*sinSigma)*(-3 + 4*cos2SigmaM*cos2SigmaM)));
+	s = b*A*(sigma - deltaSigma);
 
 	//s = s.toFixed(3); 		// round to 1mm precision
 	return s;
