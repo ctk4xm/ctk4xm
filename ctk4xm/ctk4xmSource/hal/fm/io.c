@@ -54,6 +54,11 @@ const uchar OFFSET_PTxPE__PTxPS = 5;
 /**
  * PTxPE to PTxES Offset
  */
+const uchar OFFSET_PTxPE__PTxSC = 4;
+
+/**
+ * PTxPE to PTxES Offset
+ */
 const uchar OFFSET_PTxPE__PTxES = 6;
 
 /**
@@ -175,7 +180,7 @@ void _hal_ioDigitalPullDown(vuchar *portDirection, uchar pinMask, uchar state)
 			// Configure Pull Up
 			*portDirection |= pinMask;
 
-			// Enabled Pull-Up
+			// Enabled Pull-Down
 			portDirection += OFFSET_PTxPE__PTxES;
 			*portDirection |= pinMask;
 			break;
@@ -213,6 +218,10 @@ void _hal_ioDigitalInterrupt(vuchar *port, uchar pinMask, uchar state)
 			*port |= pinMask;
 			break;
 	}
+
+	// Enabled Port A Interrupt
+	port = (port * 4) + DIR_BASE_PTxPE + OFFSET_PTxPE__PTxSC;
+	*port |= BIT1;
 }
 
 /**
@@ -235,8 +244,9 @@ uint _hal_ioDigitalIsPendingInterrupt(vuchar *port, uchar pinMask)
 {
 	uchar isPendingInterrupt = 0;
 
-	port += OFFSETPxINPxIFG;
-	isPendingInterrupt = *port & ~(pinMask);
+	// Select Status and Control Register
+	port = (port * 4) + DIR_BASE_PTxPE + OFFSET_PTxPE__PTxSC;
+	isPendingInterrupt = *port & ~(BIT3);
 
 	return isPendingInterrupt;
 }
@@ -248,8 +258,9 @@ uint _hal_ioDigitalIsPendingInterrupt(vuchar *port, uchar pinMask)
  */
 void _hal_ioDigitalClearPendingInterrupt(vuchar *port, uchar pinMask)
 {
-	port += OFFSETPxINPxIFG;
-	*port &= ~(pinMask);
+	// Select Status and Control Register
+	port = (port * 4) + DIR_BASE_PTxPE + OFFSET_PTxPE__PTxSC;
+	*port |= BIT2;
 }
 
 #endif
