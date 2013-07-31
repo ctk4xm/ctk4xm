@@ -32,7 +32,10 @@
  */
 void _hal_delayMs(uint delayMs)
 {
+	 uint i, j;
 
+	 for(i = 0; i < delayMs; i++)
+		 for(j = 0; j < 325; j++);
 }
 
 #endif

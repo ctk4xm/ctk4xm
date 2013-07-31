@@ -25,41 +25,27 @@
 
 #ifdef FREESCALE
 
-//				PTA				PTB				PTC
-//				---				---				---
-// 	PTxD 		0x00000000		0x00000002		0x00000004
-//	PTxDD		0x00000001		0x00000003		0x00000005
-//	PTxPE		0x00001840		0x00001848		0x00001850
-//	PTxSE		0x00001841		0x00001849		0x00001851
-//	PTxDS		0x00001842		0x0000184A		0x00001852
-//	PTxSC		0x00001844		0x0000184C		N/A
-//	PTxPS		0x00001845		0x0000184D		N/A
-//	PTxES		0x00001846		0x0000184E		N/A
+//				PTA			PTB			PTC
+//				---			---			---
+// 	PTxD 		0x0000		0x0004		0x0008
+//	PTxPE		0x0001		0x0005		0x0009
+//	PTxSE		0x0002		0x0006		0x000A
+//	PTxDD		0x0003		0x0007		0x000B
 
 /**
  * PTxD to PTxDD Offset
  */
-const uchar OFFSET_PTxD_PTxDD = 1;
+const uchar OFFSET_PTxD_PTxPE = 1;
 
 /**
- * Base Direction PTxPE
+ * PTxD to PTxDD Offset
  */
-const uchar BASE_DIR__PTxPE = 0x00001840;
+const uchar OFFSET_PTxD_PTxSE = 2;
 
 /**
- * PTxPE to PTxPS Offset
+ * PTxD to PTxDD Offset
  */
-const uchar OFFSET_PTxPE__PTxPS = 5;
-
-/**
- * PTxPE to PTxES Offset
- */
-const uchar OFFSET_PTxPE__PTxSC = 4;
-
-/**
- * PTxPE to PTxES Offset
- */
-const uchar OFFSET_PTxPE__PTxES = 6;
+const uchar OFFSET_PTxD_PTxDD = 3;
 
 /**
  * @brief Configure Digital Output Pin
@@ -137,7 +123,7 @@ void _hal_ioDigitalWrite(vuchar *port, uchar pinMask, uchar level)
 void _hal_ioDigitalPullUp(vuchar *portDirection, uchar pinMask, uchar state)
 {
 	// Get Direction PTxPE
-	portDirection = (portDirection * 4) + DIR_BASE_PTxPE;
+	portDirection += OFFSET_PTxD_PTxPE;
 
 	switch(state)
 	{
@@ -150,10 +136,6 @@ void _hal_ioDigitalPullUp(vuchar *portDirection, uchar pinMask, uchar state)
 		case 1:
 			// Configure Pull Up
 			*portDirection |= pinMask;
-
-			// Enabled Pull-Up
-			portDirection += OFFSET_PTxPE__PTxES;
-			*portDirection &= ~(pinMask);
 			break;
 	}
 }
@@ -165,26 +147,7 @@ void _hal_ioDigitalPullUp(vuchar *portDirection, uchar pinMask, uchar state)
  */
 void _hal_ioDigitalPullDown(vuchar *portDirection, uchar pinMask, uchar state)
 {
-	// Get Direction PTxPE
-	portDirection = (portDirection * 4) + DIR_BASE_PTxPE;
 
-	switch(state)
-	{
-		// Disabled
-		case 0:
-			// Disabled Pull-Down
-			*portDirection &= ~(pinMask);
-			break;
-		// Enabled
-		case 1:
-			// Configure Pull Up
-			*portDirection |= pinMask;
-
-			// Enabled Pull-Down
-			portDirection += OFFSET_PTxPE__PTxES;
-			*portDirection |= pinMask;
-			break;
-	}
 }
 
 /**
@@ -204,24 +167,7 @@ void _hal_ioSelectFunction(vuchar *port, uchar pinMask, uchar function)
  */
 void _hal_ioDigitalInterrupt(vuchar *port, uchar pinMask, uchar state)
 {
-	// Get Direction PTxPS
-	portDirection = (portDirection * 4) + DIR_BASE_PTxPE + OFFSET_PTxPE__PTxPS;
 
-	switch(state)
-	{
-		// Disabled
-		case 0:
-			*port &= ~(pinMask);
-			break;
-		// Enabled
-		case 1:
-			*port |= pinMask;
-			break;
-	}
-
-	// Enabled Port A Interrupt
-	port = (port * 4) + DIR_BASE_PTxPE + OFFSET_PTxPE__PTxSC;
-	*port |= BIT1;
 }
 
 /**
@@ -242,13 +188,7 @@ void _hal_ioDigitalSelectInterruptTransition(vuchar *port, uchar pinMask, uchar 
  */
 uint _hal_ioDigitalIsPendingInterrupt(vuchar *port, uchar pinMask)
 {
-	uchar isPendingInterrupt = 0;
-
-	// Select Status and Control Register
-	port = (port * 4) + DIR_BASE_PTxPE + OFFSET_PTxPE__PTxSC;
-	isPendingInterrupt = *port & ~(BIT3);
-
-	return isPendingInterrupt;
+	return 0;
 }
 
 /**
@@ -258,9 +198,7 @@ uint _hal_ioDigitalIsPendingInterrupt(vuchar *port, uchar pinMask)
  */
 void _hal_ioDigitalClearPendingInterrupt(vuchar *port, uchar pinMask)
 {
-	// Select Status and Control Register
-	port = (port * 4) + DIR_BASE_PTxPE + OFFSET_PTxPE__PTxSC;
-	*port |= BIT2;
+
 }
 
 #endif

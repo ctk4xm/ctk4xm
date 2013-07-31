@@ -31,16 +31,6 @@
  */
 void _hal_coreSelectInternalClock(uchar frequencyMHz)
 {
-	// Load Trim Value of NVICSTRM location
-	if (NVICSTRM != 0xFF)
-	{
-		ICSTRM = NVICSTRM;
-	}
-	else
-	{
-	   ICSTRM = 0xAD;
-	}
-
 	// Set Frequency Selected
 	switch(frequencyMHz)
 	{
@@ -70,33 +60,8 @@ void _hal_coreSelectInternalClock(uchar frequencyMHz)
 			break;
 	}
 
-	// Configure Internal Clock Source
-	ICSC1 = 0b00000110;
-            //││││││││
-            //│││││││+------ IREFSTEN =   0 --> Internal Reference Stop Enable:  Disabled in Stop
-            //││││││+------- IRCLKEN  =   1 --> Internal Reference Clock Enable: ICSIRCLK Active
-            //│││││+-------- IREFS    =   1 --> Internal Reference Select:       Internal Reference Clock Selected
-            //││+++--------- RDIV     = 000 --> Reference Divider:               Divides Reference Clock by 1
-            //++------------ CLKS     =  00 --> Clock Source Select:             FLL Output Selected
-
-	// Configure External Clock Source
-	ICSC2 = 0b00000000;
-            //││││││││
-            //│││││││+------ EREFSTEN =   0 --> External Reference Stop Enable: Disabled in Stop
-            //││││││+------- ERCLKEN  =   0 --> External Reference Enable:      ICSERCLK Inactive
-            //│││││+-------- EREFS    =   0 --> External Reference Select:      External Clock Source
-            //││││+--------- LP       =   0 --> Low Power Select:               FLL is not disabled in bypass mode
-            //│││+---------- HGO      =   0 --> High Gain Oscillator Select:    Configure external oscillator for low power operation
-            //││+----------- RANGE    =   0 --> Frequency Range Select:         Low frequency range selected for the external oscillator
-            //++------------ BDIV     =  00 --> Bus Frequency Divider:          Divides Select Clock by 1
-
-	// Clear Clock Flags
-	ICSSC = 0b00000000;
-            //   │││││
-            //   ││││+------ FTRIM    =   0 --> ICS Fine Trim Off
-            //   │││+------- OSCINIT  =   0 --> OSC Initialization
-            //   │++-------- CLKST    =  00 --> Clock Mode Status
-            //   +---------- IREFST   =   0 --> Internal Reference Status
+	ICGC1 = 0x28;
+	ICGC2 = 0x31;
 }
 
 /**
@@ -109,7 +74,7 @@ void _hal_coreSelectExternalClock();
  */
 void _hal_coreStopWatchdogTimer()
 {
-
+	SOPT_COPE = 0;
 }
 
 /**
