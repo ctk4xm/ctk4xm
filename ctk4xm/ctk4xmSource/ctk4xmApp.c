@@ -46,39 +46,68 @@
  */
 #include "delay.h"
 
+/**
+ * LCD Include
+ */
+#include "lcd.h"
+
 #ifdef TIM
 	#define LED		&P1OUT,BIT0
 #else
-	#define LED		&PTBD,BIT0
+	#define LED		&PTCD,BIT0
 #endif
+
+/**
+ * Welcome Message
+ */
+const uchar welcome [] = "CTK4XM  Easy!!!";
+const uchar label [] = "Counter: ";
 
 /*
  * @brief Application Program Loop
  */
 void application()
 {
+	uchar counter = 0;
+
 	// Stop Watchdog Timer
 	coreStopWatchdogTimer();
 
 	// Select Internal Clock 1MHz
 	coreSelectInternalClock(1);
 
-	// Configura Pin Salida
+	// Configure LED Pin
 	ioDigitalOutput(LED);
+
+	// Initialize LCD Module
+	lcdInit();
+
+	// Write Welcome Message
+	lcdWriteMessage(1,1,welcome);
+
+	// Write Welcome Message
+	lcdWriteMessage(2,1,label);
 
 	while(1)
 	{
 		// Led ON
 		ioDigitalWrite(LED, ON);
 
-		// Delay 200ms
-		delayMs(200);
+		// Delay 100ms
+		delayMs(100);
 
 		// Led OFF
 		ioDigitalWrite(LED, OFF);
 
-		// Delay 200ms
-		delayMs(200);
+		// Delay 100ms
+		delayMs(100);
+
+		// Write counter value
+		lcdSetCursor(2,10);
+		lcdDataDecFormat(counter,3);
+
+		// Increment Counter
+		counter++;
 	}
 }
 

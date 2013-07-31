@@ -134,12 +134,12 @@
 	#define DISPLAY7SEG_SRDAT 	&PTAD,BIT1
 
 	// LCD Module Pins Definition
-	#define RS_LCD				&PTBD,BIT0
-	#define E_LCD				&PTBD,BIT1
-	#define D4_LCD				&PTBD,BIT2
-	#define D5_LCD				&PTBD,BIT3
-	#define D6_LCD				&PTBD,BIT4
-	#define D7_LCD				&PTBD,BIT5
+	#define RS_LCD				&PTAD,BIT7
+	#define E_LCD				&PTAD,BIT6
+	#define D4_LCD				&PTAD,BIT5
+	#define D5_LCD				&PTAD,BIT4
+	#define D6_LCD				&PTAD,BIT3
+	#define D7_LCD				&PTAD,BIT2
 
 #endif
 
