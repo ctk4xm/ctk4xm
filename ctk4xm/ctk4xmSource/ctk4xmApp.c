@@ -51,6 +51,11 @@
  */
 #include "lcd.h"
 
+/**
+ * Display 7-Seg
+ */
+#include "display7Seg.h"
+
 #ifdef TIM
 	#define LED		&P1OUT,BIT0
 #else
@@ -62,6 +67,7 @@
  */
 const uchar welcome [] = "CTK4XM  Easy!!!";
 const uchar label [] = "Counter: ";
+const uchar display7SegMessage [] = {0x00,0x01,0x02,0x03,0x04,0x05,0xFF};
 
 /*
  * @brief Application Program Loop
@@ -78,6 +84,12 @@ void application()
 
 	// Configure LED Pin
 	ioDigitalOutput(LED);
+
+	// Init LCD Module
+	display7SegInit();
+
+	// Write 1234 in buffer
+	display7SegWriteMessage(1,display7SegMessage);
 
 	// Initialize LCD Module
 	lcdInit();
@@ -105,6 +117,9 @@ void application()
 		// Write counter value
 		lcdSetCursor(2,10);
 		lcdDataDecFormat(counter,3);
+
+		// Display 7-Seg Update
+		display7SegUpdate();
 
 		// Increment Counter
 		counter++;

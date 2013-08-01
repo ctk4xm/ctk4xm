@@ -36,7 +36,7 @@ uchar bufferDisplay7Seg [MAX_BUFFER_DISPLAY_CHARS];
 /**
  * Display Counter
  */
-uchar displayCounter = 0;
+uchar displayCounter;
 
 /**
  * Display 7-Seg Buffer Pointer
@@ -46,31 +46,29 @@ uchar *bufferDisplay7SegPtr;
 /**
  * Display 7-Seg Offset Buffer
  */
-uchar offsetBufferDisplay7Seg = 0;
+uchar offsetBufferDisplay7Seg;
 
 /**
  * Display 7-Seg Delay Scroll
  */
-uchar delayScrollDisplay7Seg = 0;
+uchar delayScrollDisplay7Seg;
 
 /**
  * Display 7-Seg Time Scroll
  */
-uchar timeScrollDisplay7Seg = 0;
+uchar timeScrollDisplay7Seg;
 
 /**
  * Display 7-Seg Scroll On
  */
-uchar scrollOnDisplay7Seg = 0;
+uchar scrollOnDisplay7Seg;
 
 /**
  * @brief Init Display 7-Seg
  */
 void display7SegInit()
 {
-	uchar i = 0;
-
-	// Configure Output Display 7-Seg Pins
+	// Configure Output Display 7-Seg Segments and OFF State
 	ioDigitalWrite(DISPLAY7SEG_A, ON);
 	ioDigitalOutput(DISPLAY7SEG_A);
 	ioDigitalWrite(DISPLAY7SEG_B, ON);
@@ -85,26 +83,32 @@ void display7SegInit()
 	ioDigitalOutput(DISPLAY7SEG_F);
 	ioDigitalWrite(DISPLAY7SEG_G, ON);
 	ioDigitalOutput(DISPLAY7SEG_G);
+	ioDigitalWrite(DISPLAY7SEG_POINT, ON);
+	ioDigitalOutput(DISPLAY7SEG_POINT);
 
-	// Clock Off
-	ioDigitalWrite(DISPLAY7SEG_SRCLK, OFF);
-	ioDigitalOutput(DISPLAY7SEG_SRCLK);
-	// Data On
-	ioDigitalWrite(DISPLAY7SEG_SRDAT, ON);
-	ioDigitalOutput(DISPLAY7SEG_SRDAT);
+	// Configure Output Display 7-Seg Commons and OFF State
+	ioDigitalWrite(DISPLAY7SEG_COM1, ON);
+	ioDigitalOutput(DISPLAY7SEG_COM1);
+	ioDigitalWrite(DISPLAY7SEG_COM2, ON);
+	ioDigitalOutput(DISPLAY7SEG_COM2);
+	ioDigitalWrite(DISPLAY7SEG_COM3, ON);
+	ioDigitalOutput(DISPLAY7SEG_COM3);
+	ioDigitalWrite(DISPLAY7SEG_COM4, ON);
+	ioDigitalOutput(DISPLAY7SEG_COM4);
+	ioDigitalWrite(DISPLAY7SEG_COM5, ON);
+	ioDigitalOutput(DISPLAY7SEG_COM5);
+	ioDigitalWrite(DISPLAY7SEG_COM6, ON);
+	ioDigitalOutput(DISPLAY7SEG_COM6);
 
-	// Init display counter
+	// Init Display 7-Seg Variables
 	displayCounter = 0;
+	offsetBufferDisplay7Seg = 0;
+	delayScrollDisplay7Seg = 0;
+	timeScrollDisplay7Seg = 0;
+	scrollOnDisplay7Seg = 0;
 
 	// Point to buffer
 	bufferDisplay7SegPtr = (uchar *) &bufferDisplay7Seg;
-
-	// Off All Displays
-	for(i = 0; i < MAX_DISPLAYS; i++)
-	{
-		ioDigitalWrite(DISPLAY7SEG_SRCLK, ON);
-		ioDigitalWrite(DISPLAY7SEG_SRCLK, OFF);
-	}
 
 	// Display Buffer Clear
 	display7SegBufferClear();
@@ -158,6 +162,7 @@ void display7SegUpdate()
 	ioDigitalWrite(DISPLAY7SEG_E, ON);
 	ioDigitalWrite(DISPLAY7SEG_F, ON);
 	ioDigitalWrite(DISPLAY7SEG_G, ON);
+	ioDigitalWrite(DISPLAY7SEG_POINT, ON);
 
 	// Verify Scroll On/Off and calculate Buffer Offset
 	if(scrollOnDisplay7Seg)
@@ -206,17 +211,36 @@ void display7SegUpdate()
  */
 void display7SegSelectDisplay(uchar display)
 {
-	// On Column
-	ioDigitalWrite(DISPLAY7SEG_SRDAT, ON);
+	// Turn Off all displays
+	ioDigitalWrite(DISPLAY7SEG_COM1, ON);
+	ioDigitalWrite(DISPLAY7SEG_COM2, ON);
+	ioDigitalWrite(DISPLAY7SEG_COM3, ON);
+	ioDigitalWrite(DISPLAY7SEG_COM4, ON);
+	ioDigitalWrite(DISPLAY7SEG_COM5, ON);
+	ioDigitalWrite(DISPLAY7SEG_COM6, ON);
 
-	if(display == 1)
+	// Turn On Display
+	switch(display)
 	{
-		ioDigitalWrite(DISPLAY7SEG_SRDAT, OFF);
+		case 1:
+			ioDigitalWrite(DISPLAY7SEG_COM1, OFF);
+			break;
+		case 2:
+			ioDigitalWrite(DISPLAY7SEG_COM2, OFF);
+			break;
+		case 3:
+			ioDigitalWrite(DISPLAY7SEG_COM3, OFF);
+			break;
+		case 4:
+			ioDigitalWrite(DISPLAY7SEG_COM4, OFF);
+			break;
+		case 5:
+			ioDigitalWrite(DISPLAY7SEG_COM5, OFF);
+			break;
+		case 6:
+			ioDigitalWrite(DISPLAY7SEG_COM6, OFF);
+			break;
 	}
-
-	// Clock 74HC164
-	ioDigitalWrite(DISPLAY7SEG_SRCLK, ON);
-	ioDigitalWrite(DISPLAY7SEG_SRCLK, OFF);
 }
 
 /**
