@@ -1,7 +1,7 @@
 /**
  *  @file uart.c
  *  @brief Module that allows Asynchronous Communications
- *  @date 13/07/2013
+ *  @date 02/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -22,13 +22,15 @@
  */
 
 #include "uart.h"
+#include "hal/uart.h"
 
 /**
  * @brief Init UART Module
+ * @param frequencyMHz MCU Frequency in MHz
  */
-void uartInit()
+void uartInit(uchar frequencyMHz)
 {
-
+	_hal_uartInit(frequencyMHz);
 }
 
 /**
@@ -36,9 +38,7 @@ void uartInit()
  */
 uchar uartReadByte()
 {
-	uchar readByte = 0;
-
-	return readByte;
+	return _hal_uartReadByte();
 }
 
 /**
@@ -47,5 +47,5 @@ uchar uartReadByte()
  */
 void uartWriteByte(uchar writeByte)
 {
-
+	_hal_uartWriteByte(writeByte);
 }

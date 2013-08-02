@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xmApp.c
  *  @brief Application Program
- *  @date 24/07/2013
+ *  @date 02/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -56,6 +56,11 @@
  */
 #include "display7Seg.h"
 
+/**
+ * UART Include
+ */
+#include "uart.h"
+
 #ifdef TIM
 	#define LED		&P1OUT,BIT0
 #else
@@ -79,11 +84,14 @@ void application()
 	// Stop Watchdog Timer
 	coreStopWatchdogTimer();
 
-	// Select Internal Clock 1MHz
-	coreSelectInternalClock(1);
+	// Select Internal Clock 8MHz
+	coreSelectInternalClock(8);
 
 	// Configure LED Pin
 	ioDigitalOutput(LED);
+
+	// UART init Clock 8MHz
+	uartInit(8);
 
 	// Init LCD Module
 	display7SegInit();
@@ -123,6 +131,9 @@ void application()
 
 		// Increment Counter
 		counter++;
+
+		// Transmit UART 0x55
+		uartWriteByte(0x55);
 	}
 }
 

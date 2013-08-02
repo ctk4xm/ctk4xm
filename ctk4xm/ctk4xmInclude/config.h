@@ -1,7 +1,7 @@
 /**
  *  @file config.h
  *  @brief General CTK4XM API Configurations
- *  @date 23/07/2013
+ *  @date 02/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -117,12 +117,12 @@
 	#define DISPLAY7SEG_COM6	&P2OUT,BIT5
 
 	// LCD Module Pins Definition
-	#define RS_LCD				&P2OUT,BIT0
-	#define E_LCD				&P2OUT,BIT1
-	#define D4_LCD				&P2OUT,BIT2
-	#define D5_LCD				&P2OUT,BIT3
-	#define D6_LCD				&P2OUT,BIT4
-	#define D7_LCD				&P2OUT,BIT5
+	#define LCD_RS				&P2OUT,BIT0
+	#define LCD_E				&P2OUT,BIT1
+	#define LCD_D4				&P2OUT,BIT2
+	#define LCD_D5				&P2OUT,BIT3
+	#define LCD_D6				&P2OUT,BIT4
+	#define LCD_D7				&P2OUT,BIT5
 
 #endif
 
@@ -146,12 +146,15 @@
 	#define DISPLAY7SEG_COM6	&PTDD,BIT0
 
 	// LCD Module Pins Definition
-	#define RS_LCD				&PTAD,BIT7
-	#define E_LCD				&PTAD,BIT6
-	#define D4_LCD				&PTAD,BIT5
-	#define D5_LCD				&PTAD,BIT4
-	#define D6_LCD				&PTAD,BIT3
-	#define D7_LCD				&PTAD,BIT2
+	#define LCD_RS				&PTAD,BIT7
+	#define LCD_E				&PTAD,BIT6
+	#define LCD_D4				&PTAD,BIT5
+	#define LCD_D5				&PTAD,BIT4
+	#define LCD_D6				&PTAD,BIT3
+	#define LCD_D7				&PTAD,BIT2
+
+	#define SCI1_TX				&PTED,BIT0
+	#define SCI1_RX				&PTED,BIT1
 
 #endif
 

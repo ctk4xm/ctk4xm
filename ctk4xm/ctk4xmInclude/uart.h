@@ -1,7 +1,7 @@
 /**
  *  @file uart.h
  *  @brief Module that allows Asynchronous Communications
- *  @date 13/07/2013
+ *  @date 02/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -29,8 +29,9 @@
 
 /**
  * @brief Init UART Module
+ * @param frequencyMHz MCU Frequency in MHz
  */
-void uartInit();
+void uartInit(uchar frequencyMHz);
 
 /**
  * @brief Read Byte UART

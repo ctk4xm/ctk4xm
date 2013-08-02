@@ -1,7 +1,7 @@
 /**
  *  @file uart.c
  *  @brief Module that allows Asynchronous Communications
- *  @date 13/07/2013
+ *  @date 02/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -27,10 +27,45 @@
 
 /**
  * @brief Init UART Module
+ * @param frequencyMHz MCU Frequency in MHz
  */
-void _hal_uartInit()
+void _hal_uartInit(uchar frequencyMHz)
 {
+	// Configure SCI Pins
+	ioDigitalOutput(SCI1_TX);
+	ioDigitalInput(SCI1_RX);
 
+	// Configure 9600 bps
+	switch(frequencyMHz)
+	{
+		case 1:
+			SCI1BDH = 0x00;
+			SCI1BDL = 0x07;
+			break;
+
+		case 8:
+			SCI1BDH = 0x00;
+			SCI1BDL = 0x3A;
+			break;
+
+		case 12:
+			SCI1BDH = 0x00;
+			SCI1BDL = 0x57;
+			break;
+
+		case 16:
+			SCI1BDH = 0x00;
+			SCI1BDL = 0x74;
+			break;
+
+		default:
+			SCI1BDH = 0x00;
+			SCI1BDL = 0x3A;
+			break;
+	}
+
+	// Enabled RX and TX
+	SCI1C2 = SCI1C2_TE_MASK | SCI1C2_RIE_MASK;
 }
 
 /**
@@ -38,9 +73,10 @@ void _hal_uartInit()
  */
 uchar _hal_uartReadByte()
 {
-	uchar readByte = 0;
+	// Wait for Reception Complete
+	while(SCI1S1 & SCI1S1_RDRF_MASK);
 
-	return readByte;
+	return SCI1D;
 }
 
 /**
@@ -49,7 +85,11 @@ uchar _hal_uartReadByte()
  */
 void _hal_uartWriteByte(uchar writeByte)
 {
+	// Write Byte to Send
+	SCI1D = writeByte;
 
+	// Wait for Transmit Complete
+	while(!(SCI1S1 & SCI1S1_TC_MASK));
 }
 
 #endif

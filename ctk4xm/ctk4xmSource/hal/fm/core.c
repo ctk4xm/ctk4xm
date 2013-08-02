@@ -1,7 +1,7 @@
 /**
  *  @file core.c
  *  @brief General CTK4XM API Specifications - Freescale Microcontroller
- *  @date 24/07/2013
+ *  @date 02/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -31,37 +31,41 @@
  */
 void _hal_coreSelectInternalClock(uchar frequencyMHz)
 {
+	// FLL Engaged Internal Reference --> 243MHz
+	ICGC1 = 0x08;
+
 	// Set Frequency Selected
 	switch(frequencyMHz)
 	{
 		case 1:
-			/*BCSCTL1 = CALBC1_1MHZ;
-			DCOCTL = CALDCO_1MHZ;*/
+			// N=4(000) R=8(011) 1.110.857,14 Hz
+			ICGC2 = 0b00000011;
 			break;
 
 		case 8:
-			/*BCSCTL1 = CALBC1_1MHZ;
-			DCOCTL = CALDCO_1MHZ;*/
+			// N=16(110) R=4(010) 8.886.857,14 Hz
+			ICGC2 = 0b01100010;
 			break;
 
 		case 12:
-			/*BCSCTL1 = CALBC1_1MHZ;
-			DCOCTL = CALDCO_1MHZ;*/
+			// N=12(100) R=2(001) 13.330.285,71 Hz
+			ICGC2 = 0b01000001;
 			break;
 
 		case 16:
-			/*BCSCTL1 = CALBC1_1MHZ;
-			DCOCTL = CALDCO_1MHZ;*/
+			// N=8(010) R=1(000) 17.773.714,29 Hz
+			ICGC2 = 0b00100000;
 			break;
 
 		default:
-			/*BCSCTL1 = CALBC1_1MHZ;
-			DCOCTL = CALDCO_1MHZ;*/
+			// N=16(110) R=4(010) 8.886.857,14 Hz
+			ICGC2 = 0b01100010;
 			break;
 	}
 
-	ICGC1 = 0x28;
-	ICGC2 = 0x31;
+	// Wait FLL Engaged
+	while(!(ICGS1 & ICGS1_LOCK_MASK));
+
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  *  @file lcd.c
  *  @brief Module that controls Standard LCD Module
- *  @date 10/07/2013
+ *  @date 02/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -29,35 +29,35 @@
 void lcdInit()
 {
 	// Configure LCD Pins
-	ioDigitalOutput(RS_LCD);
-	ioDigitalOutput(E_LCD);
-	ioDigitalOutput(D7_LCD);
-	ioDigitalOutput(D6_LCD);
-	ioDigitalOutput(D5_LCD);
-	ioDigitalOutput(D4_LCD);
+	ioDigitalOutput(LCD_RS);
+	ioDigitalOutput(LCD_E);
+	ioDigitalOutput(LCD_D7);
+	ioDigitalOutput(LCD_D6);
+	ioDigitalOutput(LCD_D5);
+	ioDigitalOutput(LCD_D4);
 
 	// Idle State
-	ioDigitalWrite(RS_LCD, OFF);
-	ioDigitalWrite(E_LCD, OFF);
+	ioDigitalWrite(LCD_RS, OFF);
+	ioDigitalWrite(LCD_E, OFF);
 	delayMs(15);
 
 	// Init 4-bit LCD Mode
-	ioDigitalWrite(E_LCD, ON);
-	ioDigitalWrite(D7_LCD, OFF);
-	ioDigitalWrite(D6_LCD, OFF);
-	ioDigitalWrite(D5_LCD, ON);
-	ioDigitalWrite(D4_LCD, ON);
-	ioDigitalWrite(E_LCD, OFF);
+	ioDigitalWrite(LCD_E, ON);
+	ioDigitalWrite(LCD_D7, OFF);
+	ioDigitalWrite(LCD_D6, OFF);
+	ioDigitalWrite(LCD_D5, ON);
+	ioDigitalWrite(LCD_D4, ON);
+	ioDigitalWrite(LCD_E, OFF);
 	delayMs(5);
-	ioDigitalWrite(E_LCD, ON);
-	ioDigitalWrite(E_LCD, OFF);
+	ioDigitalWrite(LCD_E, ON);
+	ioDigitalWrite(LCD_E, OFF);
 	delayMs(1);
-	ioDigitalWrite(E_LCD, ON);
-	ioDigitalWrite(E_LCD, OFF);
+	ioDigitalWrite(LCD_E, ON);
+	ioDigitalWrite(LCD_E, OFF);
 	delayMs(5);
-	ioDigitalWrite(E_LCD, ON);
-	ioDigitalWrite(D4_LCD, OFF);
-	ioDigitalWrite(E_LCD, OFF);
+	ioDigitalWrite(LCD_E, ON);
+	ioDigitalWrite(LCD_D4, OFF);
+	ioDigitalWrite(LCD_E, OFF);
 	delayMs(1);
 
 	// LCD 4-bit Interface
@@ -88,92 +88,92 @@ void lcdSendByte(uchar byteExport)
 	uchar bitExport = 0;
 
 	// Send 4-bit MSB
-	ioDigitalWrite(E_LCD, ON);
+	ioDigitalWrite(LCD_E, ON);
 
 	bitExport = byteExport & 0x80;
 	if(bitExport == 0x80)
 	{
-		ioDigitalWrite(D7_LCD, ON);
+		ioDigitalWrite(LCD_D7, ON);
 	}
 	else
 	{
-		ioDigitalWrite(D7_LCD, OFF);
+		ioDigitalWrite(LCD_D7, OFF);
 	}
 
 	bitExport = byteExport & 0x40;
 	if(bitExport == 0x40)
 	{
-		ioDigitalWrite(D6_LCD, ON);
+		ioDigitalWrite(LCD_D6, ON);
 	}
 	else
 	{
-		ioDigitalWrite(D6_LCD, OFF);
+		ioDigitalWrite(LCD_D6, OFF);
 	}
 
 	bitExport = byteExport & 0x20;
 	if(bitExport == 0x20)
 	{
-		ioDigitalWrite(D5_LCD, ON);
+		ioDigitalWrite(LCD_D5, ON);
 	}
 	else
 	{
-		ioDigitalWrite(D5_LCD, OFF);
+		ioDigitalWrite(LCD_D5, OFF);
 	}
 
 	bitExport = byteExport & 0x10;
 	if(bitExport == 0x10)
 	{
-		ioDigitalWrite(D4_LCD, ON);
+		ioDigitalWrite(LCD_D4, ON);
 	}
 	else
 	{
-		ioDigitalWrite(D4_LCD, OFF);
+		ioDigitalWrite(LCD_D4, OFF);
 	}
-	ioDigitalWrite(E_LCD, OFF);
+	ioDigitalWrite(LCD_E, OFF);
 
 	// Send 4-bit LSB
-	ioDigitalWrite(E_LCD, ON);
+	ioDigitalWrite(LCD_E, ON);
 
 	bitExport = byteExport & 0x08;
 	if(bitExport == 0x08)
 	{
-		ioDigitalWrite(D7_LCD, ON);
+		ioDigitalWrite(LCD_D7, ON);
 	}
 	else
 	{
-		ioDigitalWrite(D7_LCD, OFF);
+		ioDigitalWrite(LCD_D7, OFF);
 	}
 
 	bitExport = byteExport & 0x04;
 	if(bitExport == 0x04)
 	{
-		ioDigitalWrite(D6_LCD, ON);
+		ioDigitalWrite(LCD_D6, ON);
 	}
 	else
 	{
-		ioDigitalWrite(D6_LCD, OFF);
+		ioDigitalWrite(LCD_D6, OFF);
 	}
 
 	bitExport = byteExport & 0x02;
 	if(bitExport == 0x02)
 	{
-		ioDigitalWrite(D5_LCD, ON);
+		ioDigitalWrite(LCD_D5, ON);
 	}
 	else
 	{
-		ioDigitalWrite(D5_LCD, OFF);
+		ioDigitalWrite(LCD_D5, OFF);
 	}
 
 	bitExport = byteExport & 0x01;
 	if(bitExport == 0x01)
 	{
-		ioDigitalWrite(D4_LCD, ON);
+		ioDigitalWrite(LCD_D4, ON);
 	}
 	else
 	{
-		ioDigitalWrite(D4_LCD, OFF);
+		ioDigitalWrite(LCD_D4, OFF);
 	}
-	ioDigitalWrite(E_LCD, OFF);
+	ioDigitalWrite(LCD_E, OFF);
 
 	// Delay 2 ms
 	delayMs(2);
@@ -185,7 +185,7 @@ void lcdSendByte(uchar byteExport)
 void lcdData(uchar data)
 {
 	// Data Mode
-	ioDigitalWrite(RS_LCD, ON);
+	ioDigitalWrite(LCD_RS, ON);
 
 	// Send Byte
 	lcdSendByte(data);
@@ -198,7 +198,7 @@ void lcdData(uchar data)
 void lcdInstru(uchar instru)
 {
 	// Instruction Mode
-	ioDigitalWrite(RS_LCD, OFF);
+	ioDigitalWrite(LCD_RS, OFF);
 
 	// Send Byte
 	lcdSendByte(instru);
