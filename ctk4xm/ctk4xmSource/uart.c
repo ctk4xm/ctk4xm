@@ -49,3 +49,19 @@ void uartWriteByte(uchar writeByte)
 {
 	_hal_uartWriteByte(writeByte);
 }
+
+/**
+ * @brief Read Interrupt Enable/Disable
+ */
+void uartReadInterrupt(uchar state)
+{
+	_hal_uartReadInterrupt(state);
+}
+
+/**
+ * @brief Write Interrupt Enable/Disable
+ */
+void uartWriteInterrupt(uchar state)
+{
+	_hal_uartWriteInterrupt(state);
+}

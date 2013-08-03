@@ -44,4 +44,14 @@ uchar uartReadByte();
  */
 void uartWriteByte(uchar writeByte);
 
+/**
+ * @brief Read Interrupt Enable/Disable
+ */
+void uartReadInterrupt(uchar state);
+
+/**
+ * @brief Write Interrupt Enable/Disable
+ */
+void uartWriteInterrupt(uchar state);
+
 #endif

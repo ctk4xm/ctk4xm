@@ -53,4 +53,20 @@ void _hal_uartWriteByte(uchar writeByte)
 
 }
 
+/**
+ * @brief Read Interrupt Enable/Disable
+ */
+void _hal_uartReadInterrupt(uchar state)
+{
+
+}
+
+/**
+ * @brief Write Interrupt Enable/Disable
+ */
+void _hal_uartWriteInterrupt(uchar state)
+{
+
+}
+
 #endif

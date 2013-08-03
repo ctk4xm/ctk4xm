@@ -90,7 +90,7 @@ void _hal_coreStopWatchdogTimer()
  */
 void _hal_coreEnableInterrupts()
 {
-
+	asm(cli);
 }
 
 /**
@@ -98,7 +98,7 @@ void _hal_coreEnableInterrupts()
  */
 void _hal_coreDisableInterrupts()
 {
-
+	asm(sei);
 }
 
 /**

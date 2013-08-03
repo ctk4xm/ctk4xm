@@ -96,6 +96,9 @@ void application()
 	// UART init Clock 8MHz
 	uartInit(4);
 
+	// UART Read Interrupt
+	uartReadInterrupt(ON);
+
 	// Init LCD Module
 	display7SegInit();
 
@@ -110,6 +113,9 @@ void application()
 
 	// Write Welcome Message
 	lcdWriteMessage(2,1,label);
+
+	// Enable MCU Interrupts
+	coreEnableInterrupts();
 
 	while(1)
 	{
@@ -134,11 +140,10 @@ void application()
 
 		// Increment Counter
 		counter++;
-
-		// Transmit UART 0x55
-		uartWriteByte('A');
 	}
 }
+
+#ifdef TIM
 
 /**
  * @brief Interrupt Service Routine Port 1
@@ -235,3 +240,59 @@ void isrNMI()
 {
 
 }
+
+#endif
+
+
+#ifdef FREESCALE
+
+/**
+ * @brief Interrupt Service Routine SCI2 TX
+ */
+void isrSCI2_TX()
+{
+
+}
+
+/**
+ * @brief Interrupt Service Routine SCI2 RX
+ */
+void isrSCI2_RX()
+{
+
+}
+
+/**
+ * @brief Interrupt Service Routine SCI2 ERROR
+ */
+void isrSCI2_ERR()
+{
+
+}
+
+/**
+ * @brief Interrupt Service Routine SCI1 TX
+ */
+void isrSCI1_TX()
+{
+
+}
+
+/**
+ * @brief Interrupt Service Routine SCI1 RX
+ */
+void isrSCI1_RX()
+{
+	// Send Data Receive
+	uartWriteByte(uartReadByte());
+}
+
+/**
+ * @brief Interrupt Service Routine SCI1 ERROR
+ */
+void isrSCI1_ERR()
+{
+
+}
+
+#endif

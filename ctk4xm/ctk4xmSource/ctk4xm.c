@@ -46,6 +46,8 @@ void main(void)
 	application();
 }
 
+#ifdef TIM
+
 /**
  * @brief Interrupt Service Routine Port 1
  */
@@ -153,3 +155,57 @@ __interrupt void NMI_ISR (void)
 {
 	isrNMI();
 }
+
+#endif
+
+#ifdef FREESCALE
+
+/**
+ * @brief Interrupt Service Routine SCI2 TX
+ */
+void interrupt 21 SCI2TX_ISR(void)
+{
+	isrSCI2_TX();
+}
+
+/**
+ * @brief Interrupt Service Routine SCI2 RX
+ */
+void interrupt 20 SCI2RX_ISR(void)
+{
+	isrSCI2_RX();
+}
+
+/**
+ * @brief Interrupt Service Routine SCI2 ERROR
+ */
+void interrupt 19 SCI2ERR_ISR(void)
+{
+	isrSCI2_ERR();
+}
+
+/**
+ * @brief Interrupt Service Routine SCI1 TX
+ */
+void interrupt 18 SCI1TX_ISR(void)
+{
+	isrSCI1_TX();
+}
+
+/**
+ * @brief Interrupt Service Routine SCI1 RX
+ */
+void interrupt 17 SCI1RX_ISR(void)
+{
+	isrSCI1_RX();
+}
+
+/**
+ * @brief Interrupt Service Routine SCI1 ERROR
+ */
+void interrupt 16 SCI1ERR_ISR(void)
+{
+	isrSCI1_ERR();
+}
+
+#endif

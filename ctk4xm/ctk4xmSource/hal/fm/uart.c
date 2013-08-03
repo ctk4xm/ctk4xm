@@ -70,7 +70,7 @@ void _hal_uartInit(uchar frequencyMHz)
 	}
 
 	// Enabled RX and TX
-	SCI1C2 = SCI1C2_TE_MASK | SCI1C2_RIE_MASK;
+	SCI1C2 = SCI1C2_TE_MASK | SCI1C2_RE_MASK;
 }
 
 /**
@@ -79,7 +79,7 @@ void _hal_uartInit(uchar frequencyMHz)
 uchar _hal_uartReadByte()
 {
 	// Wait for Reception Complete
-	while(SCI1S1 & SCI1S1_RDRF_MASK);
+	while(!(SCI1S1 & SCI1S1_RDRF_MASK));
 
 	return SCI1D;
 }
@@ -95,6 +95,36 @@ void _hal_uartWriteByte(uchar writeByte)
 
 	// Wait for Transmit Complete
 	while(!(SCI1S1 & SCI1S1_TC_MASK));
+}
+
+/**
+ * @brief Read Interrupt Enable/Disable
+ */
+void _hal_uartReadInterrupt(uchar state)
+{
+	if(state)
+	{
+		SCI1C2 |= SCI1C2_RIE_MASK;
+	}
+	else
+	{
+		SCI1C2 &= ~(SCI1C2_RIE_MASK);
+	}
+}
+
+/**
+ * @brief Write Interrupt Enable/Disable
+ */
+void _hal_uartWriteInterrupt(uchar state)
+{
+	if(state)
+	{
+		SCI1C2 |= SCI1C2_TCIE_MASK;
+	}
+	else
+	{
+		SCI1C2 &= ~(SCI1C2_TCIE_MASK);
+	}
 }
 
 #endif
