@@ -85,7 +85,10 @@ void application()
 	coreStopWatchdogTimer();
 
 	// Select Internal Clock 8MHz
-	coreSelectInternalClock(8);
+	//coreSelectInternalClock(8);
+
+	// Select External Clock
+	coreSelectExternalClock();
 
 	// Configure LED Pin
 	ioDigitalOutput(LED);

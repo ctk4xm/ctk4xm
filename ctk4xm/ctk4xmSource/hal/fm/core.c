@@ -65,13 +65,17 @@ void _hal_coreSelectInternalClock(uchar frequencyMHz)
 
 	// Wait FLL Engaged
 	while(!(ICGS1 & ICGS1_LOCK_MASK));
-
 }
 
 /**
  * @brief Select External Clock
  */
-void _hal_coreSelectExternalClock();
+void _hal_coreSelectExternalClock()
+{
+	// FLL Bypassed External Reference
+	ICGC1 = 0x70;
+	ICGC2 = 0x00;
+}
 
 /**
  * @brief Stop Watchdog Timer
