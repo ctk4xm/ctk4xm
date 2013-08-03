@@ -22,6 +22,29 @@
  */
 
 #include "gps.h"
+#include "io.h"
+#include "delay.h"
+
+/**
+ * @brief GPS Init
+ */
+void gpsInit()
+{
+	// Configure GPS Pins
+	ioDigitalOutput(GPS_TX);
+	ioDigitalInput(GPS_RX);
+	ioDigitalWrite(GPS_ON_OFF,OFF);
+	ioDigitalOutput(GPS_ON_OFF);
+	ioDigitalInput(GPS_WAKE);
+
+	// Start GPS
+	ioDigitalWrite(GPS_ON_OFF,ON);
+	delayMs(200);
+	ioDigitalWrite(GPS_ON_OFF,OFF);
+
+	// Wait for GPS WakeUp
+	while(ioDigitalRead(GPS_ON_OFF));
+}
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty

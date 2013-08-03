@@ -124,6 +124,12 @@
 	#define LCD_D6				&P2OUT,BIT4
 	#define LCD_D7				&P2OUT,BIT5
 
+	// GPS Module Pins Definition
+	#define GPS_TX				&P2OUT,BIT0
+	#define GPS_RX				&P2OUT,BIT1
+	#define GPS_ON_OFF			&P2OUT,BIT6
+	#define GPS_WAKE			&P2OUT,BIT5
+
 #endif
 
 #ifdef FREESCALE
@@ -153,8 +159,15 @@
 	#define LCD_D6				&PTAD,BIT3
 	#define LCD_D7				&PTAD,BIT2
 
+	// UART Module Pins Definition
 	#define SCI1_TX				&PTED,BIT0
 	#define SCI1_RX				&PTED,BIT1
+
+	// GPS Module Pins Definition
+	#define GPS_TX				&PTED,BIT0
+	#define GPS_RX				&PTED,BIT1
+	#define GPS_ON_OFF			&PTCD,BIT6
+	#define GPS_WAKE			&PTCD,BIT5
 
 #endif
 

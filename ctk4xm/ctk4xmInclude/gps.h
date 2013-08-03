@@ -21,12 +21,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DELAY_H_
-#define DELAY_H_
+#ifndef GPS_H_
+#define GPS_H_
 
 #include "config.h"
 #include "math.h"
 
+/**
+ * @brief GPS Init
+ */
+void gpsInit();
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty
