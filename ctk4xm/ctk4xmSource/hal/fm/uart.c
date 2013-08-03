@@ -43,6 +43,11 @@ void _hal_uartInit(uchar frequencyMHz)
 			SCI1BDL = 0x07;
 			break;
 
+		case 4:
+			SCI1BDH = 0x00;
+			SCI1BDL = 0x1A;
+			break;
+
 		case 8:
 			SCI1BDH = 0x00;
 			SCI1BDL = 0x3A;

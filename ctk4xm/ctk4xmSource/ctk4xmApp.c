@@ -94,7 +94,7 @@ void application()
 	ioDigitalOutput(LED);
 
 	// UART init Clock 8MHz
-	uartInit(8);
+	uartInit(4);
 
 	// Init LCD Module
 	display7SegInit();
@@ -136,7 +136,7 @@ void application()
 		counter++;
 
 		// Transmit UART 0x55
-		uartWriteByte(0x55);
+		uartWriteByte('A');
 	}
 }
 
