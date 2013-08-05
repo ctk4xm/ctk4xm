@@ -93,7 +93,7 @@ void application()
 	// Configure LED Pin
 	ioDigitalOutput(LED);
 
-	// UART init Clock 8MHz
+	// UART init Clock 4MHz
 	uartInit(4);
 
 	// UART Read Interrupt
@@ -283,8 +283,14 @@ void isrSCI1_TX()
  */
 void isrSCI1_RX()
 {
+	// Obtain Data SCI
+	uchar dataSCI = uartReadByte();
+
+	// Process GPS NMEA Sentence
+	gpsReceiveNMEASentence(dataSCI, "$GPRMC");
+
 	// Send Data Receive
-	uartWriteByte(uartReadByte());
+	uartWriteByte(dataSCI);
 }
 
 /**
