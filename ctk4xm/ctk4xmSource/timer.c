@@ -1,7 +1,7 @@
 /**
  *  @file timer.c
  *  @brief Module that drive Timer
- *  @date 24/07/2013
+ *  @date 06/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -38,6 +38,14 @@ void timerSetCount(uint valueCounter)
 void timerInterruptEnable()
 {
 	_hal_timerInterruptEnable();
+}
+
+/**
+ * @brief Clear Timer Interrupt Flag
+ */
+void timerClearInterruptFlag()
+{
+	_hal_timerClearInterruptFlag();
 }
 
 /**

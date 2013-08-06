@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xmApp.c
  *  @brief Application Program
- *  @date 05/08/2013
+ *  @date 06/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -65,6 +65,11 @@
  * GPS Include
  */
 #include "gps.h"
+
+/**
+ * TIMER Include
+ */
+#include "timer.h"
 
 #ifdef TIM
 	#define LED		&P1OUT,BIT0
@@ -132,9 +137,6 @@ void application()
 		// Write counter value
 		lcdSetCursor(2,10);
 		lcdDataDecFormat(counter,3);
-
-		// Display 7-Seg Update
-		display7SegUpdate();
 
 		// Increment Counter
 		counter++;
@@ -327,6 +329,18 @@ void isrSCI1_RX()
 void isrSCI1_ERR()
 {
 
+}
+
+/**
+ * @brief Interrupt Service Routine TPM1 OverFlow
+ */
+void isrTPM1_OVER()
+{
+	// Display 7-Seg Update
+	display7SegUpdate();
+
+	// Clear Interrupt Flag
+	timerClearInterruptFlag();
 }
 
 #endif

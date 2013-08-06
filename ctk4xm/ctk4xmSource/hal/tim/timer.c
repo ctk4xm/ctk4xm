@@ -1,7 +1,7 @@
 /**
  *  @file timer.c
  *  @brief Module that drive Timer - Texas Instrument Microcontroller
- *  @date 24/07/2013
+ *  @date 06/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -40,6 +40,14 @@ void _hal_timerInterruptEnable()
 {
 	TACTL &= ~(TAIFG);
 	TACTL |= TAIE;
+}
+
+/**
+ * @brief Clear Timer Interrupt Flag
+ */
+void _hal_timerClearInterruptFlag()
+{
+
 }
 
 /**

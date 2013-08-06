@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xm.c
  *  @brief Main Program
- *  @date 10/09/2013
+ *  @date 06/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -207,5 +207,14 @@ void interrupt 16 SCI1ERR_ISR(void)
 {
 	isrSCI1_ERR();
 }
+
+/**
+ * @brief Interrupt Service Routine TPM1 OverFlow
+ */
+void interrupt 8 TPM1_OVER_ISR(void)
+{
+	isrTPM1_OVER();
+}
+
 
 #endif
