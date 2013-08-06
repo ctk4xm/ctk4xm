@@ -1,7 +1,7 @@
 /**
  *  @file lcd.c
  *  @brief Module that controls Standard LCD Module
- *  @date 02/08/2013
+ *  @date 05/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -281,21 +281,19 @@ void lcdWriteSetPosition(uchar row, uchar column, uchar exportData)
  * @brief Write Character LCD Module
  * @param row LCD Row
  * @param column LCD Column
- * @param message Array Message to Send to LCD Module
+ * @param ptrMessage Pointer Message to Send to LCD Module
  */
-void lcdWriteMessage(uchar row, uchar column, const uchar message [])
+void lcdWriteMessage(uchar row, uchar column, char * ptrMessage)
 {
-	int i = 0;
-
 	// LCD Position
 	lcdSetCursor(row, column);
 
-	while(message[i] != 0)
+	while(*ptrMessage != 0)
 	{
-		lcdData(message[i]);
+		lcdData(*ptrMessage);
 
 		// Next Character
-		i++;
+		ptrMessage++;
 	}
 }
 

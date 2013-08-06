@@ -1,7 +1,7 @@
 /**
  *  @file gps.h
  *  @brief Module that allows work GPS
- *  @date 13/07/2013
+ *  @date 05/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -31,6 +31,18 @@
  * @brief GPS Init
  */
 void gpsInit();
+
+/**
+ * @brief Receive NMEA Sentence
+ * @param nmeaSentence [] Name NMEA Sentence Required
+ * @param charReceive Char NMEA Sentence
+ */
+void gpsReceiveNMEASentence(const uchar nmeaSentence [], uchar charReceive);
+
+/**
+ * @brief Get Nmea Sentence Data
+ */
+uchar * gpsGetNmeaSentenceData(uchar position);
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty

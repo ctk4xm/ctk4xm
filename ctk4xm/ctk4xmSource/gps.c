@@ -1,7 +1,7 @@
 /**
  *  @file gps.c
  *  @brief Module that allows work GPS
- *  @date 24/07/2013
+ *  @date 05/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -37,12 +37,25 @@ uchar nmeaSentenceBuffer [100];
 uchar *ptrNmeaSentenceBuffer;
 
 /**
+ * NMEA Sentence Data
+ */
+uchar nmeaSentenceData [15] [15];
+
+/**
+ * GPS Capture Sentence Switch
+ */
+uchar gpsCaptureSentence;
+
+/**
  * @brief GPS Init
  */
 void gpsInit()
 {
 	// Point First Character Buffer
 	ptrNmeaSentenceBuffer = &nmeaSentenceBuffer[0];
+
+	// Capture Sentence OFF
+	gpsCaptureSentence = 0;
 
 	// Configure GPS Pins
 	ioDigitalOutput(GPS_TX);
@@ -68,6 +81,7 @@ void gpsInit()
 
 /**
  * @brief Receive NMEA Sentence
+ * @param nmeaSentence [] Name NMEA Sentence Required
  * @param charReceive Char NMEA Sentence
  */
 void gpsReceiveNMEASentence(const uchar nmeaSentence [], uchar charReceive)
@@ -75,68 +89,118 @@ void gpsReceiveNMEASentence(const uchar nmeaSentence [], uchar charReceive)
 	// Sample NMEA Sentence
 	// $GPRMC,181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
 
-	uchar i = 0;
+	uchar i, j, k;
 	uchar nmeaSentenceRequested = 0;
 
-	switch(charReceive)
+
+	// Validate First Character NMEA Sentence
+	if(charReceive == '$')
 	{
-		// First Character NMEA Sentence
-		case '$':
-			// Point First Character Buffer
-			ptrNmeaSentenceBuffer = &nmeaSentenceBuffer[0];
+		// Point First Character Buffer
+		ptrNmeaSentenceBuffer = &nmeaSentenceBuffer[0];
 
-			// Store NMEA Character Receive
-			*ptrNmeaSentenceBuffer = charReceive;
+		// Store NMEA Character Receive
+		*ptrNmeaSentenceBuffer = charReceive;
 
-			// Increment at the next character in the Buffer
-			ptrNmeaSentenceBuffer++;
-			break;
+		// Increment at the next character in the Buffer
+		ptrNmeaSentenceBuffer++;
 
-		// Detect Last Character NMEA Sentence
-		case 0x0A:
-
-			// Start Requested State
-			nmeaSentenceRequested = 1;
-
-			// Point First Character Buffer
-			ptrNmeaSentenceBuffer = &nmeaSentenceBuffer[0];
-
-			// Compare if the Actual NMEA Sentence is required
-			for(i = 0; i < 6; i++)
+		// Capture Sentence ON
+		gpsCaptureSentence = 1;
+	}
+	else
+	{
+		// If capture is in progress
+		if(gpsCaptureSentence)
+		{
+			// Detect Last Character NMEA Sentence
+			if(charReceive == 0x0D)
 			{
-				if(nmeaSentence[i] != *ptrNmeaSentenceBuffer)
+				// Capture Sentence OFF
+				gpsCaptureSentence = 0;
+
+				// Store NMEA Character Receive
+				*ptrNmeaSentenceBuffer = charReceive;
+
+				// Start Requested State
+				nmeaSentenceRequested = 1;
+
+				// Point First Character Buffer
+				ptrNmeaSentenceBuffer = &nmeaSentenceBuffer[0];
+
+				// Compare if the Actual NMEA Sentence is required
+				for(i = 0; i < 6; i++)
 				{
-					nmeaSentenceRequested = 0;
-					break;
+					if(nmeaSentence[i] != *ptrNmeaSentenceBuffer)
+					{
+						nmeaSentenceRequested = 0;
+						break;
+					}
+
+					// Increment at the next character in the Buffer
+					ptrNmeaSentenceBuffer++;
 				}
+
+				// If NMEA is requested
+				if(nmeaSentenceRequested)
+				{
+					// Initialize pointers
+					j = 0;
+					k = 0;
+
+					// Verify the first comma
+					if(*ptrNmeaSentenceBuffer == ',')
+					{
+						// Increment at the first variable in the Buffer
+						ptrNmeaSentenceBuffer++;
+
+						// Obtain all variables in the NMEA Sentence
+						while(*ptrNmeaSentenceBuffer != 0x0D)
+						{
+							// Increment # variable
+							if(*ptrNmeaSentenceBuffer == ',')
+							{
+								// Last Character Variable
+								nmeaSentenceData[j][k] = '\n';
+
+								// Reset Pointers
+								j++;
+								k = 0;
+
+								// Point the next character
+								ptrNmeaSentenceBuffer++;
+							}
+							else
+							{
+								// Store Char NMEA Sentence
+								nmeaSentenceData[j][k] = *ptrNmeaSentenceBuffer;
+
+								// Point the next character
+								ptrNmeaSentenceBuffer++;
+								k++;
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				// Store NMEA Character Receive
+				*ptrNmeaSentenceBuffer = charReceive;
 
 				// Increment at the next character in the Buffer
 				ptrNmeaSentenceBuffer++;
 			}
-
-			// If NMEA is requested
-			if(nmeaSentenceRequested)
-			{
-				ptrNmeaSentenceBuffer++;
-			}
-
-			break;
-
-		default:
-
-			// Store NMEA Character Receive
-			*ptrNmeaSentenceBuffer = charReceive;
-
-			// Increment at the next character in the Buffer
-			ptrNmeaSentenceBuffer++;
+		}
 	}
+}
 
-
-	// Verify Initial Character $
-	if(charReceive == '$')
-	{
-
-	}
+/**
+ * @brief Get Nmea Sentence Data
+ */
+uchar * gpsGetNmeaSentenceData(uchar position)
+{
+	return &nmeaSentenceData[position][0];
 }
 
 /**

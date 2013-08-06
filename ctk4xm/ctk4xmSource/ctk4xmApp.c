@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xmApp.c
  *  @brief Application Program
- *  @date 02/08/2013
+ *  @date 05/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -61,25 +61,26 @@
  */
 #include "uart.h"
 
+/**
+ * GPS Include
+ */
+#include "gps.h"
+
 #ifdef TIM
 	#define LED		&P1OUT,BIT0
 #else
 	#define LED		&PTCD,BIT0
 #endif
 
-/**
- * Welcome Message
- */
-const uchar welcome [] = "CTK4XM  Easy!!!";
-const uchar label [] = "Counter: ";
-const uchar display7SegMessage [] = {0x00,0x01,0x02,0x03,0x04,0x05,0xFF};
-
 /*
  * @brief Application Program Loop
  */
 void application()
 {
-	uchar counter = 0;
+	// NMEA Buffer
+	uchar *nmeaSentenceData;
+
+	uchar i, counter = 0;
 
 	// Stop Watchdog Timer
 	coreStopWatchdogTimer();
@@ -93,26 +94,23 @@ void application()
 	// Configure LED Pin
 	ioDigitalOutput(LED);
 
-	// UART init Clock 4MHz
-	uartInit(4);
-
-	// UART Read Interrupt
-	uartReadInterrupt(ON);
+	// GPS Init
+	gpsInit();
 
 	// Init LCD Module
 	display7SegInit();
 
 	// Write 1234 in buffer
-	display7SegWriteMessage(1,display7SegMessage);
+	//display7SegWriteMessage(1,display7SegMessage);
 
 	// Initialize LCD Module
 	lcdInit();
 
 	// Write Welcome Message
-	lcdWriteMessage(1,1,welcome);
+	lcdWriteMessage(1,1,"CTK4XM  Easy!!!");
 
 	// Write Welcome Message
-	lcdWriteMessage(2,1,label);
+	lcdWriteMessage(2,1,"Counter: ");
 
 	// Enable MCU Interrupts
 	coreEnableInterrupts();
@@ -140,6 +138,36 @@ void application()
 
 		// Increment Counter
 		counter++;
+
+		// Get Valid RMC Character
+		nmeaSentenceData = gpsGetNmeaSentenceData(1);
+
+		if(*nmeaSentenceData == 'A')
+		{
+			// Write Welcome Message
+			lcdWriteMessage(1,1,"Valido");
+			lcdSetCursor(2,1);
+
+			// get NMEA Variable
+			nmeaSentenceData = gpsGetNmeaSentenceData(0);
+			i = 1;
+
+			// Obtain data variable
+			while(*nmeaSentenceData != '\n')
+			{
+				lcdData(*nmeaSentenceData);
+				display7SegWriteBuffer(i, (*nmeaSentenceData - 0x30));
+				nmeaSentenceData++;
+				i++;
+			}
+		}
+		else
+		{
+			// Write Welcome Message
+			lcdWriteMessage(1,1,"Invalido");
+		}
+
+
 	}
 }
 
@@ -287,7 +315,7 @@ void isrSCI1_RX()
 	uchar dataSCI = uartReadByte();
 
 	// Process GPS NMEA Sentence
-	gpsReceiveNMEASentence(dataSCI, "$GPRMC");
+	gpsReceiveNMEASentence("$GPRMC", dataSCI);
 
 	// Send Data Receive
 	uartWriteByte(dataSCI);
