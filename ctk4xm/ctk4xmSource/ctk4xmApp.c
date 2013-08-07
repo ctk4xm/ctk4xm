@@ -71,6 +71,11 @@
  */
 #include "timer.h"
 
+/**
+ * NMEA Sentence Data
+ */
+uchar nmeaSentenceData [15][15];
+
 #ifdef TIM
 	#define LED		&P1OUT,BIT0
 #else
@@ -83,9 +88,10 @@
 void application()
 {
 	// NMEA Buffer
-	uchar *nmeaSentenceData;
+	uchar *ptrNmeaSentence;
+	uchar *ptrNmeaData;
 
-	uchar i, counter = 0;
+	uchar i, j, k, counter = 0;
 
 	// Stop Watchdog Timer
 	coreStopWatchdogTimer();
@@ -141,35 +147,74 @@ void application()
 		// Increment Counter
 		counter++;
 
-		// Get Valid RMC Character
-		nmeaSentenceData = gpsGetNmeaSentenceData(1);
-
-		if(*nmeaSentenceData == 'A')
+		// Obtain NMEA Sentence
+		ptrNmeaSentence = gpsGetNmeaSentence("$GPRMC");
+		
+		// Process GPRMC Sentence
+		if(*ptrNmeaSentence == '$')
 		{
-			// Write Welcome Message
-			lcdWriteMessage(1,1,"Valido");
-			lcdSetCursor(2,1);
+			// Initialize pointers
+			j = 0;
+			k = 0;
 
-			// get NMEA Variable
-			nmeaSentenceData = gpsGetNmeaSentenceData(0);
-			i = 1;
-
-			// Obtain data variable
-			while(*nmeaSentenceData != '\n')
+			// Obtain all variables in the NMEA Sentence
+			while(*ptrNmeaSentence != 0x0D)
 			{
-				lcdData(*nmeaSentenceData);
-				display7SegWriteBuffer(i, (*nmeaSentenceData - 0x30));
-				nmeaSentenceData++;
-				i++;
+				// Increment # variable
+				if(*ptrNmeaSentence == ',')
+				{
+					// Last Character Variable
+					nmeaSentenceData[j][k] = '\n';
+
+					// Reset Pointers
+					j++;
+					k = 0;
+
+					// Point the next character
+					ptrNmeaSentence++;
+				}
+				else
+				{
+					// Store Char NMEA Sentence
+					nmeaSentenceData[j][k] = *ptrNmeaSentence;
+
+					// Point the next character
+					ptrNmeaSentence++;
+					k++;
+				}
 			}
-		}
-		else
-		{
-			// Write Welcome Message
-			lcdWriteMessage(1,1,"Invalido");
-		}
+			
+			// Point Valid Indicator 
+			ptrNmeaData = &nmeaSentenceData[2][0];
+			
+			if(*ptrNmeaData == 'A')
+			{
+				// Write Welcome Message
+				lcdWriteMessage(1,1,"Valido");
+				lcdSetCursor(2,1);
 
+				// get NMEA Variable
+				ptrNmeaData = &nmeaSentenceData[1][0];
+				i = 1;
 
+				// Obtain data variable
+				while(*ptrNmeaData != '\n')
+				{
+					lcdData(*ptrNmeaData);
+					display7SegWriteBuffer(i, (*ptrNmeaData - 0x30));
+					ptrNmeaData++;
+					i++;
+				}
+			}
+			else
+			{
+				// Write Welcome Message
+				lcdWriteMessage(1,1,"Invalido");
+			}	
+		}
+		
+		// Display 7-Seg Update
+		display7SegUpdate();
 	}
 }
 
@@ -317,7 +362,7 @@ void isrSCI1_RX()
 	uchar dataSCI = uartReadByte();
 
 	// Process GPS NMEA Sentence
-	gpsReceiveNMEASentence("$GPRMC", dataSCI);
+	gpsCollectNMEASentence(dataSCI);
 
 	// Send Data Receive
 	uartWriteByte(dataSCI);
@@ -337,10 +382,10 @@ void isrSCI1_ERR()
 void isrTPM1_OVER()
 {
 	// Display 7-Seg Update
-	display7SegUpdate();
+	//display7SegUpdate();
 
 	// Clear Interrupt Flag
-	timerClearInterruptFlag();
+	//timerClearInterruptFlag();
 }
 
 #endif

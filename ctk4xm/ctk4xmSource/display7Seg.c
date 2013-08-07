@@ -114,13 +114,13 @@ void display7SegInit()
 	display7SegBufferClear();
 
 	// Set Count 2000 Cycles at 1us = 2ms
-	timerSetCount(2000);
+	//timerSetCount(2000);
 
 	// Enable Timer Interrupt
-	timerInterruptEnable();
+	//timerInterruptEnable();
 
 	// Arranca el Timer
-	timerStart();
+	//timerStart();
 }
 
 /**
