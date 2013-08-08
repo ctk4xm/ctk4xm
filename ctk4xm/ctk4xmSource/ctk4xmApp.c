@@ -128,7 +128,7 @@ void application()
 
 	while(1)
 	{
-		// Led ON
+		/*// Led ON
 		ioDigitalWrite(LED, ON);
 
 		// Delay 100ms
@@ -145,9 +145,9 @@ void application()
 		lcdDataDecFormat(counter,3);
 
 		// Increment Counter
-		counter++;
+		counter++;*/
 
-		// Obtain NMEA Sentence
+		/*// Obtain NMEA Sentence
 		ptrNmeaSentence = gpsGetNmeaSentence("$GPRMC");
 		
 		// Process GPRMC Sentence
@@ -211,10 +211,10 @@ void application()
 				// Write Welcome Message
 				lcdWriteMessage(1,1,"Invalido");
 			}	
-		}
+		}*/
 		
 		// Display 7-Seg Update
-		display7SegUpdate();
+		// display7SegUpdate();
 	}
 }
 
@@ -362,10 +362,13 @@ void isrSCI1_RX()
 	uchar dataSCI = uartReadByte();
 
 	// Process GPS NMEA Sentence
-	gpsCollectNMEASentence(dataSCI);
+	gpsReceiveNMEASentence(dataSCI);
 
+	// Display 7-Seg Update
+	//display7SegUpdate();
+	
 	// Send Data Receive
-	uartWriteByte(dataSCI);
+	//uartWriteByte(dataSCI);
 }
 
 /**

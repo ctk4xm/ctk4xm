@@ -27,19 +27,12 @@
 #include "uart.h"
 
 /**
- * Maximum NMEA Sentences
- */
-#define 	MAX_NMEA_SENTENCES		8
-
-/**
- * NMEA Sentence Counter
- */
-uchar nmeaSentenceCounter;
-
-/**
  * NMEA Sentence Buffer
+ * [0] $GPGGA
+ * [1] $GPGSA
+ * [2] $GPRMC
  */
-uchar nmeaSentenceBuffer [MAX_NMEA_SENTENCES][80];
+uchar gpsNmeaSentenceBuffer[3][80];
 
 /**
  * NMEA Sentence Pointer
@@ -47,29 +40,58 @@ uchar nmeaSentenceBuffer [MAX_NMEA_SENTENCES][80];
 uchar *ptrNmeaSentenceBuffer;
 
 /**
- * GPS Capture Sentence Switch
+ * Capture NMEA Sentence
  */
-uchar gpsCaptureSentence;
+uchar gpsCaptureNMEASentence;
 
 /**
- * GPS Capture
+ * Buffer ID NMEA Sentence
  */
-uchar gpsCapture;
+uchar gpsNmeaSentenceIdBuffer [6];
+
+/**
+ * ID NMEA Sentence $GPGGA
+ */
+const uchar gpsNmeaSentenceGPGGAId [] = "$GPGGA";
+
+/**
+ * ID NMEA Sentence $GPGGA Counter
+ */
+uchar gpsNmeaSentenceGPGGAIdCounter;
+
+/**
+ * ID NMEA Sentence $GPGGA
+ */
+const uchar gpsNmeaSentenceGPGSAId [] = "$GPGSA";
+
+/**
+ * ID NMEA Sentence $GPGGA Counter
+ */
+uchar gpsNmeaSentenceGPGSAIdCounter;
+
+/**
+ * ID NMEA Sentence GPRMC
+ */
+const uchar gpsNmeaSentenceGPRMCId [] = "$GPRMC";
+
+/**
+ * ID NMEA Sentence GPRMC Counter
+ */
+uchar gpsNmeaSentenceGPRMCIdCounter;
+
+/**
+ * Quantity Chars Receive
+ */
+uchar gpsQtyCharsReceive;
 
 /**
  * @brief GPS Init
  */
 void gpsInit()
 {
-	// Intialize the counter sentence
-	nmeaSentenceCounter = 0;
+	// Capture NMEA Sentence OFF
+	gpsCaptureNMEASentence = 0;
 
-	// Capture Sentence OFF
-	gpsCaptureSentence = 0;
-
-	// GPS Capture
-	gpsCapture = 1;
-	
 	// Configure GPS Pins
 	ioDigitalOutput(GPS_TX);
 	ioDigitalInput(GPS_RX);
@@ -93,33 +115,101 @@ void gpsInit()
 }
 
 /**
- * @brief Collect NMEA Sentence
- * @param GPS Char NMEA Sentence Receive
+ * @brief Receive NMEA Sentence
+ * @param GPS Character NMEA Sentence Receive
  */
-void gpsCollectNMEASentence(uchar charReceive)
+void gpsReceiveNMEASentence(uchar charReceive)
 {
-	// Capture Chars NMEA Sentences
-	if(gpsCapture)
+	uchar i, j = 0;
+	uchar *ptrNMEAIdCompare;
+	
+	// Validate First Character NMEA Sentence
+	if(charReceive == '$')
 	{
-		// Validate First Character NMEA Sentence
-		if(charReceive == '$')
+		// Initialize Counter Chars Receive 
+		gpsQtyCharsReceive = 0;
+		
+		// Initialize Counter NMEA Identify
+		gpsNmeaSentenceGPGGAIdCounter = 0;
+		gpsNmeaSentenceGPGSAIdCounter = 0;
+		gpsNmeaSentenceGPRMCIdCounter = 0;
+		
+		// Point NMEA Id Buffer
+		ptrNmeaSentenceBuffer = &gpsNmeaSentenceIdBuffer[0];
+		
+		// Store NMEA Character Receive
+		*ptrNmeaSentenceBuffer++ = charReceive;
+
+		// Capture NMEA Sentence ON
+		gpsCaptureNMEASentence = 1;
+	}
+	else
+	{
+		// If capture is in progress
+		if(gpsCaptureNMEASentence)
 		{
-			// Point NMEA Sentence Buffer
-			ptrNmeaSentenceBuffer = &nmeaSentenceBuffer[nmeaSentenceCounter][0];
+			// Increment Character Counter
+			gpsQtyCharsReceive++;
 
-			// Store NMEA Character Receive
-			*ptrNmeaSentenceBuffer = charReceive;
-
-			// Increment at the next character in the Buffer
-			ptrNmeaSentenceBuffer++;
-
-			// Capture Sentence ON
-			gpsCaptureSentence = 1;
-		}
-		else
-		{
-			// If capture is in progress
-			if(gpsCaptureSentence)
+			// Validate NMEA Sentence Type
+			if(gpsQtyCharsReceive <= 6)
+			{
+				// Load pointer
+				if(gpsQtyCharsReceive == 6)
+				{
+					if(charReceive == ',')
+					{
+						// Identify GPGGA NMEA Sentence
+						if(gpsNmeaSentenceGPGGAIdCounter == 5)
+						{
+							ptrNmeaSentenceBuffer = &gpsNmeaSentenceBuffer[0][0];
+						}
+						// Identify GPGSA NMEA Sentence
+						else if(gpsNmeaSentenceGPGSAIdCounter == 5)
+						{
+							ptrNmeaSentenceBuffer = &gpsNmeaSentenceBuffer[1][0];
+						}
+						// Identify GPRMC NMEA Sentence
+						else if(gpsNmeaSentenceGPRMCIdCounter == 5)
+						{
+							ptrNmeaSentenceBuffer = &gpsNmeaSentenceBuffer[2][0];
+						}
+						else
+						{
+							// Capture NMEA Sentence OFF
+							gpsCaptureNMEASentence = 0;
+						}
+					}
+					else
+					{
+						// Capture NMEA Sentence OFF
+						gpsCaptureNMEASentence = 0;
+					}
+				}
+				else
+				{
+					// Store NMEA Character Receive
+					*ptrNmeaSentenceBuffer++ = charReceive;
+					
+					// Validate GPGGA Sentence
+					if(charReceive == gpsNmeaSentenceGPGGAId[gpsQtyCharsReceive])
+					{
+						gpsNmeaSentenceGPGGAIdCounter++;
+					}
+					// Validate GPGSA Sentence
+					if(charReceive == gpsNmeaSentenceGPGSAId[gpsQtyCharsReceive])
+					{
+						gpsNmeaSentenceGPGSAIdCounter++;
+					}
+					// Validate GPRMC Sentence
+					if(charReceive == gpsNmeaSentenceGPRMCId[gpsQtyCharsReceive])
+						              
+					{
+						gpsNmeaSentenceGPRMCIdCounter++;
+					}
+				}				
+			}
+			else
 			{
 				// Detect Last Character NMEA Sentence
 				if(charReceive == 0x0D)
@@ -127,29 +217,17 @@ void gpsCollectNMEASentence(uchar charReceive)
 					// Store NMEA Character Receive
 					*ptrNmeaSentenceBuffer = charReceive;
 					
-					// Point the next sentence
-					nmeaSentenceCounter++;
-
-					// Initialize sentence counter
-					if(nmeaSentenceCounter > MAX_NMEA_SENTENCES)
-					{
-						nmeaSentenceCounter = 0;
-						gpsCapture = 0;
-					}
-
 					// Capture Sentence OFF
-					gpsCaptureSentence = 0;
+					gpsCaptureNMEASentence = 0;
 				}
 				else
 				{
 					// Store NMEA Character Receive
-					*ptrNmeaSentenceBuffer = charReceive;
+					*ptrNmeaSentenceBuffer++ = charReceive;
 
-					// Increment at the next character in the Buffer
-					ptrNmeaSentenceBuffer++;
 				}
 			}
-		}		
+		}
 	}
 }
 
@@ -158,7 +236,7 @@ void gpsCollectNMEASentence(uchar charReceive)
  */
 uchar * gpsGetNmeaSentence(const uchar nmeaSentence [])
 {
-	uchar i, j, nmeaSentenceRequested;
+	/*uchar i, j, nmeaSentenceRequested;
 	
 	// Validate for Finish Capture
 	if(gpsCapture == 0)
@@ -194,8 +272,8 @@ uchar * gpsGetNmeaSentence(const uchar nmeaSentence [])
 				break;
 			}
 		}		
-	}
-	return ptrNmeaSentenceBuffer;
+	}*/
+	return 0;
 }
 
 /**

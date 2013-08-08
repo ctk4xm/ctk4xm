@@ -33,10 +33,10 @@
 void gpsInit();
 
 /**
- * @brief Collect NMEA Sentence
- * @param GPS Char NMEA Sentence Receive
+ * @brief Receive NMEA Sentence
+ * @param GPS Character NMEA Sentence Receive
  */
-void gpsCollectNMEASentence(uchar charReceive);
+void gpsReceiveNMEASentence(uchar charReceive);
 
 /**
  * @brief Obtain a pointer to NMEA Selected
