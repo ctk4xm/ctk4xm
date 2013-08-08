@@ -114,13 +114,13 @@ void display7SegInit()
 	display7SegBufferClear();
 
 	// Set Count 2000 Cycles at 1us = 2ms
-	//timerSetCount(2000);
+	timerSetCount(2000);
 
 	// Enable Timer Interrupt
-	//timerInterruptEnable();
+	timerInterruptEnable();
 
 	// Arranca el Timer
-	//timerStart();
+	timerStart();
 }
 
 /**
@@ -164,7 +164,7 @@ void display7SegUpdate()
 	ioDigitalWrite(DISPLAY7SEG_G, ON);
 	ioDigitalWrite(DISPLAY7SEG_POINT, ON);
 
-	// Verify Scroll On/Off and calculate Buffer Offset
+	/*// Verify Scroll On/Off and calculate Buffer Offset
 	if(scrollOnDisplay7Seg)
 	{
 		delayScrollDisplay7Seg++;
@@ -180,7 +180,7 @@ void display7SegUpdate()
 				offsetBufferDisplay7Seg = 0;
 			}
 		}
-	}
+	}*/
 
 	// Increment Display
 	displayCounter++;
@@ -191,15 +191,19 @@ void display7SegUpdate()
 		displayCounter = 1;
 
 		// Point to buffer
-		bufferDisplay7SegPtr = (uchar *) &bufferDisplay7Seg;
-		bufferDisplay7SegPtr += offsetBufferDisplay7Seg;
+		bufferDisplay7SegPtr = &bufferDisplay7Seg[0];
+		//bufferDisplay7SegPtr += offsetBufferDisplay7Seg;
 	}
 
 	// Select Display
 	display7SegSelectDisplay(displayCounter);
 
-	// Set 7-Seg Segments
-	display7SegSetSegments(display7SegFont[*bufferDisplay7SegPtr]);
+	// Validate Data between 0x00 y 0x0F
+	if(*bufferDisplay7SegPtr < 0x10)
+	{
+		// Set 7-Seg Segments
+		display7SegSetSegments(display7SegFont[*bufferDisplay7SegPtr]);	
+	}
 
 	// Increment Buffer Pointer
 	bufferDisplay7SegPtr++;

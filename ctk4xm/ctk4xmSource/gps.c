@@ -234,46 +234,9 @@ void gpsReceiveNMEASentence(uchar charReceive)
 /**
  * @brief Obtain a pointer to NMEA Selected
  */
-uchar * gpsGetNmeaSentence(const uchar nmeaSentence [])
+uchar * gpsGetNmeaSentence(uchar positionBuffer)
 {
-	/*uchar i, j, nmeaSentenceRequested;
-	
-	// Validate for Finish Capture
-	if(gpsCapture == 0)
-	{
-		// Find the NMEA Sentence
-		for(i = 0; i < MAX_NMEA_SENTENCES; i++)
-		{
-			// Start Requested State
-			nmeaSentenceRequested = 1;
-
-			// Point NMEA Sentence Buffer
-			ptrNmeaSentenceBuffer = &nmeaSentenceBuffer[i][0];
-			
-			// Compare if the Actual NMEA Sentence is required
-			for(j = 0; j < 6; j++)
-			{
-				if(nmeaSentence[j] != *ptrNmeaSentenceBuffer)
-				{
-					nmeaSentenceRequested = 0;
-					break;
-				}
-
-				// Increment at the next character in the Buffer
-				ptrNmeaSentenceBuffer++;
-			}
-			
-			// If NMEA is requested
-			if(nmeaSentenceRequested)
-			{
-				// Point NMEA Sentence Buffer
-				ptrNmeaSentenceBuffer = &nmeaSentenceBuffer[i][0];
-				gpsCapture = 1;
-				break;
-			}
-		}		
-	}*/
-	return 0;
+	return &gpsNmeaSentenceBuffer[positionBuffer][0];
 }
 
 /**

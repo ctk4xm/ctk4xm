@@ -40,8 +40,9 @@ void gpsReceiveNMEASentence(uchar charReceive);
 
 /**
  * @brief Obtain a pointer to NMEA Selected
+ * @param Position NMEA Buffer
  */
-uchar * gpsGetNmeaSentence(const uchar nmeaSentence []);
+uchar * gpsGetNmeaSentence(uchar positionBuffer);
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty

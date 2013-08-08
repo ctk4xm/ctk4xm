@@ -111,9 +111,6 @@ void application()
 	// Init LCD Module
 	display7SegInit();
 
-	// Write 1234 in buffer
-	//display7SegWriteMessage(1,display7SegMessage);
-
 	// Initialize LCD Module
 	lcdInit();
 
@@ -121,37 +118,18 @@ void application()
 	lcdWriteMessage(1,1,"CTK4XM  Easy!!!");
 
 	// Write Welcome Message
-	lcdWriteMessage(2,1,"Counter: ");
+	lcdWriteMessage(2,1,"UTC:");
 
 	// Enable MCU Interrupts
 	coreEnableInterrupts();
 
 	while(1)
 	{
-		/*// Led ON
-		ioDigitalWrite(LED, ON);
-
-		// Delay 100ms
-		delayMs(100);
-
-		// Led OFF
-		ioDigitalWrite(LED, OFF);
-
-		// Delay 100ms
-		delayMs(100);
-
-		// Write counter value
-		lcdSetCursor(2,10);
-		lcdDataDecFormat(counter,3);
-
-		// Increment Counter
-		counter++;*/
-
-		/*// Obtain NMEA Sentence
-		ptrNmeaSentence = gpsGetNmeaSentence("$GPRMC");
+		// Obtain NMEA Sentence
+		ptrNmeaSentence = gpsGetNmeaSentence(2);
 		
 		// Process GPRMC Sentence
-		if(*ptrNmeaSentence == '$')
+		if(*ptrNmeaSentence != 0x00)
 		{
 			// Initialize pointers
 			j = 0;
@@ -185,16 +163,16 @@ void application()
 			}
 			
 			// Point Valid Indicator 
-			ptrNmeaData = &nmeaSentenceData[2][0];
+			ptrNmeaData = &nmeaSentenceData[1][0];
 			
 			if(*ptrNmeaData == 'A')
 			{
 				// Write Welcome Message
-				lcdWriteMessage(1,1,"Valido");
-				lcdSetCursor(2,1);
+				lcdWriteMessage(2,5,"Valido");
+				lcdSetCursor(2,11);
 
 				// get NMEA Variable
-				ptrNmeaData = &nmeaSentenceData[1][0];
+				ptrNmeaData = &nmeaSentenceData[0][0];
 				i = 1;
 
 				// Obtain data variable
@@ -209,12 +187,9 @@ void application()
 			else
 			{
 				// Write Welcome Message
-				lcdWriteMessage(1,1,"Invalido");
+				lcdWriteMessage(2,5,"Invalido");
 			}	
-		}*/
-		
-		// Display 7-Seg Update
-		// display7SegUpdate();
+		}
 	}
 }
 
@@ -358,17 +333,8 @@ void isrSCI1_TX()
  */
 void isrSCI1_RX()
 {
-	// Obtain Data SCI
-	uchar dataSCI = uartReadByte();
-
 	// Process GPS NMEA Sentence
-	gpsReceiveNMEASentence(dataSCI);
-
-	// Display 7-Seg Update
-	//display7SegUpdate();
-	
-	// Send Data Receive
-	//uartWriteByte(dataSCI);
+	gpsReceiveNMEASentence(uartReadByte());
 }
 
 /**
@@ -385,10 +351,10 @@ void isrSCI1_ERR()
 void isrTPM1_OVER()
 {
 	// Display 7-Seg Update
-	//display7SegUpdate();
+	display7SegUpdate();
 
 	// Clear Interrupt Flag
-	//timerClearInterruptFlag();
+	timerClearInterruptFlag();
 }
 
 #endif
