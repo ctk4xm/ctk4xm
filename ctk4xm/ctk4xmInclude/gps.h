@@ -27,6 +27,31 @@
 #include "config.h"
 #include "math.h"
 
+
+/**
+ * Struct GPRMC NMEA Sentence
+ * $GPRMC,181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
+ */
+typedef struct
+{
+	uchar rtcHour;
+	uchar rtcMinute;
+	uchar rtcSecond;
+	uchar state;
+	uchar latitudeHour;
+	float latitudeMinuteSecond;
+	uchar latitudeNS;
+	uchar longitudeHour;
+	float longitudeMinuteSecond;
+	uchar longitudeEW;
+	float speedOverGround;
+	float course;
+	uchar rtcDay;
+	uchar rtcMonth;
+	uchar rtcYear;
+} gpsStructNmeaGPRMC;
+
+
 /**
  * @brief GPS Init
  */
@@ -39,10 +64,9 @@ void gpsInit();
 void gpsReceiveNMEASentence(uchar charReceive);
 
 /**
- * @brief Obtain a pointer to NMEA Selected
- * @param Position NMEA Buffer
+ * @brief Obtain Struct NMEA GPRMC
  */
-uchar * gpsGetNmeaSentence(uchar positionBuffer);
+gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence();
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty

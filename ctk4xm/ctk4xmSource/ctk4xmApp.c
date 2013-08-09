@@ -125,70 +125,23 @@ void application()
 
 	while(1)
 	{
-		// Obtain NMEA Sentence
-		ptrNmeaSentence = gpsGetNmeaSentence(2);
-		
-		// Process GPRMC Sentence
-		if(*ptrNmeaSentence != 0x00)
+		// Get NMEA GPRMC
+		gpsStructNmeaGPRMC structNmeaGPRMC = gpsGetNmeaGPRMCSentence();
+
+		if(structNmeaGPRMC.state == 'A')
 		{
-			// Initialize pointers
-			j = 0;
-			k = 0;
-
-			// Obtain all variables in the NMEA Sentence
-			while(*ptrNmeaSentence != 0x0D)
-			{
-				// Increment # variable
-				if(*ptrNmeaSentence == ',')
-				{
-					// Last Character Variable
-					nmeaSentenceData[j][k] = '\n';
-
-					// Reset Pointers
-					j++;
-					k = 0;
-
-					// Point the next character
-					ptrNmeaSentence++;
-				}
-				else
-				{
-					// Store Char NMEA Sentence
-					nmeaSentenceData[j][k] = *ptrNmeaSentence;
-
-					// Point the next character
-					ptrNmeaSentence++;
-					k++;
-				}
-			}
-			
-			// Point Valid Indicator 
-			ptrNmeaData = &nmeaSentenceData[1][0];
-			
-			if(*ptrNmeaData == 'A')
-			{
-				// Write Welcome Message
-				lcdWriteMessage(2,5,"Valido");
-				lcdSetCursor(2,11);
-
-				// get NMEA Variable
-				ptrNmeaData = &nmeaSentenceData[0][0];
-				i = 1;
-
-				// Obtain data variable
-				while(*ptrNmeaData != '\n')
-				{
-					lcdData(*ptrNmeaData);
-					display7SegWriteBuffer(i, (*ptrNmeaData - 0x30));
-					ptrNmeaData++;
-					i++;
-				}
-			}
-			else
-			{
-				// Write Welcome Message
-				lcdWriteMessage(2,5,"Invalido");
-			}	
+			lcdSetCursor(2,1);
+			lcdDataDecFormat(structNmeaGPRMC.rtcHour, 2);
+			lcdWrite(':');
+			lcdDataDecFormat(structNmeaGPRMC.rtcMinute, 2);
+			lcdWrite(':');
+			lcdDataDecFormat(structNmeaGPRMC.rtcSecond, 2);
+			lcdWrite(' ');
+			lcdDataDecFormat(structNmeaGPRMC.rtcDay, 2);
+			lcdWrite('/');
+			lcdDataDecFormat(structNmeaGPRMC.rtcMonth, 2);
+			lcdWrite('/');
+			lcdDataDecFormat(structNmeaGPRMC.rtcYear, 4);
 		}
 	}
 }
@@ -342,7 +295,7 @@ void isrSCI1_RX()
  */
 void isrSCI1_ERR()
 {
-
+	SCI1S1 = 0;
 }
 
 /**

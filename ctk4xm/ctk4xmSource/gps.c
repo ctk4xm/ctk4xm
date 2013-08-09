@@ -85,6 +85,11 @@ uchar gpsNmeaSentenceGPRMCIdCounter;
 uchar gpsQtyCharsReceive;
 
 /**
+ * Struct NMEA GPRMC
+ */
+gpsStructNmeaGPRMC structNmeaGPRMC;
+
+/**
  * @brief GPS Init
  */
 void gpsInit()
@@ -120,9 +125,6 @@ void gpsInit()
  */
 void gpsReceiveNMEASentence(uchar charReceive)
 {
-	uchar i, j = 0;
-	uchar *ptrNMEAIdCompare;
-	
 	// Validate First Character NMEA Sentence
 	if(charReceive == '$')
 	{
@@ -232,12 +234,42 @@ void gpsReceiveNMEASentence(uchar charReceive)
 }
 
 /**
- * @brief Obtain a pointer to NMEA Selected
+ * @brief Obtain Struct NMEA GPRMC
+ * 0000000000,1,222222222,3,4444444444,5,6666,77777,888888
+ * 181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
  */
-uchar * gpsGetNmeaSentence(uchar positionBuffer)
+gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence()
 {
-	return &gpsNmeaSentenceBuffer[positionBuffer][0];
+	uchar tens, units;
+
+	// If Sentence is Valid, parse all values
+	if(gpsNmeaSentenceBuffer[2][11] == 'A')
+	{
+		// Obtain RTC Hour
+		tens = gpsNmeaSentenceBuffer[2][0] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][1] - 0x30;
+		structNmeaGPRMC.rtcHour = (tens * 10) + units;
+
+		// Obtain RTC Minute
+		tens = gpsNmeaSentenceBuffer[2][2] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][3] - 0x30;
+		structNmeaGPRMC.rtcMinute = (tens * 10) + units;
+
+		// Obtain RTC Second
+		tens = gpsNmeaSentenceBuffer[2][4] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][5] - 0x30;
+		structNmeaGPRMC.rtcSecond = (tens * 10) + units;
+
+		// Valid Sentence
+		structNmeaGPRMC.state = 'A';
+	}
+	else
+	{
+		structNmeaGPRMC.state = 'V';
+	}
+	return structNmeaGPRMC;
 }
+
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty
