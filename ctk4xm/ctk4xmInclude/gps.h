@@ -1,7 +1,7 @@
 /**
  *  @file gps.h
  *  @brief Module that allows work GPS
- *  @date 05/08/2013
+ *  @date 10/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -65,8 +65,9 @@ void gpsReceiveNMEASentence(uchar charReceive);
 
 /**
  * @brief Obtain Struct NMEA GPRMC
+ * @param utcTimeZone UTC Time Zone
  */
-gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence();
+gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(char utcTimeZone);
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty

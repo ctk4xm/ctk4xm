@@ -1,7 +1,7 @@
 /**
  *  @file display7Seg.c
  *  @brief Module that allows controls 7-Seg Displays
- *  @date 24/07/2013
+ *  @date 10/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -322,5 +322,39 @@ void display7SegWriteMessage(uchar display, const uchar message [])
 		// Next Character
 		display++;
 		i++;
+	}
+}
+
+/**
+ * @brief Send Data Decimal Format Display 7-Seg
+ * @param position Position Display 7-Seg
+ * @param dataExport Data to Send to Display 7-Seg
+ * @param quantityDigits Quantity Digits
+ */
+void display7SegWriteDecFormat(uchar position, uint dataExport, uchar quantityDigits)
+{
+	uchar i = 0;
+	uint divisor = 1;
+	uchar digitExport = 0;
+
+	// Get Divisor
+	for(i = 1; i < quantityDigits; i++)
+	{
+		divisor *= 10;
+	}
+
+	// Get and Export Digits
+	for(i = 1; i <= quantityDigits; i++)
+	{
+		// Export Digit
+		digitExport = (dataExport / divisor);
+		display7SegWriteBuffer(position, digitExport);
+
+		// Decrement export data and divisor
+		dataExport %= divisor;
+		divisor /= 10;
+		
+		// Increment position
+		position++;
 	}
 }

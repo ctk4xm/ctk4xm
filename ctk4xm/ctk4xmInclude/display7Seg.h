@@ -1,7 +1,7 @@
 /**
  *  @file display7Seg.h
  *  @brief Module that allows controls 7-Seg Displays
- *  @date 10/07/2013
+ *  @date 10/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -93,5 +93,13 @@ void display7SegScrollOff();
  * @param message Array Message to Send to Led Matrix
  */
 void display7SegWriteMessage(uchar display, const uchar message []);
+
+/**
+ * @brief Send Data Decimal Format Display 7-Seg
+ * @param position Position Display 7-Seg
+ * @param dataExport Data to Send to Display 7-Seg
+ * @param quantityDigits Quantity Digits
+ */
+void display7SegWriteDecFormat(uchar position, uint dataExport, uchar quantityDigits);
 
 #endif

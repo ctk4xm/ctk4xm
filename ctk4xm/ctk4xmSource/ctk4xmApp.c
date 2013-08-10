@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xmApp.c
  *  @brief Application Program
- *  @date 06/08/2013
+ *  @date 10/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -117,31 +117,33 @@ void application()
 	// Write Welcome Message
 	lcdWriteMessage(1,1,"CTK4XM  Easy!!!");
 
-	// Write Welcome Message
-	lcdWriteMessage(2,1,"UTC:");
-
 	// Enable MCU Interrupts
 	coreEnableInterrupts();
 
 	while(1)
 	{
 		// Get NMEA GPRMC
-		gpsStructNmeaGPRMC structNmeaGPRMC = gpsGetNmeaGPRMCSentence();
+		gpsStructNmeaGPRMC structNmeaGPRMC = gpsGetNmeaGPRMCSentence(-5);
 
 		if(structNmeaGPRMC.state == 'A')
 		{
+			// Export data to LCD
 			lcdSetCursor(2,1);
 			lcdDataDecFormat(structNmeaGPRMC.rtcHour, 2);
 			lcdWrite(':');
 			lcdDataDecFormat(structNmeaGPRMC.rtcMinute, 2);
 			lcdWrite(':');
 			lcdDataDecFormat(structNmeaGPRMC.rtcSecond, 2);
-			lcdWrite(' ');
 			lcdDataDecFormat(structNmeaGPRMC.rtcDay, 2);
 			lcdWrite('/');
 			lcdDataDecFormat(structNmeaGPRMC.rtcMonth, 2);
 			lcdWrite('/');
 			lcdDataDecFormat(structNmeaGPRMC.rtcYear, 4);
+			
+			// Export data to Display 7-Seg
+			display7SegWriteDecFormat(1, structNmeaGPRMC.rtcHour, 2);
+			display7SegWriteDecFormat(3, structNmeaGPRMC.rtcMinute, 2);
+			display7SegWriteDecFormat(5, structNmeaGPRMC.rtcSecond, 2);
 		}
 	}
 }

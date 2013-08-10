@@ -1,7 +1,7 @@
 /**
  *  @file gps.c
  *  @brief Module that allows work GPS
- *  @date 05/08/2013
+ *  @date 10/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -32,7 +32,7 @@
  * [1] $GPGSA
  * [2] $GPRMC
  */
-uchar gpsNmeaSentenceBuffer[3][80];
+uchar gpsNmeaSentenceBuffer[3][15][15];
 
 /**
  * NMEA Sentence Pointer
@@ -89,6 +89,8 @@ uchar gpsQtyCharsReceive;
  */
 gpsStructNmeaGPRMC structNmeaGPRMC;
 
+uchar i, j, k, l;
+
 /**
  * @brief GPS Init
  */
@@ -128,53 +130,47 @@ void gpsReceiveNMEASentence(uchar charReceive)
 	// Validate First Character NMEA Sentence
 	if(charReceive == '$')
 	{
-		// Initialize Counter Chars Receive 
-		gpsQtyCharsReceive = 0;
-		
+		// Capture NMEA Sentence ON
+		gpsCaptureNMEASentence = 1;
+
 		// Initialize Counter NMEA Identify
 		gpsNmeaSentenceGPGGAIdCounter = 0;
 		gpsNmeaSentenceGPGSAIdCounter = 0;
 		gpsNmeaSentenceGPRMCIdCounter = 0;
 		
-		// Point NMEA Id Buffer
-		ptrNmeaSentenceBuffer = &gpsNmeaSentenceIdBuffer[0];
-		
-		// Store NMEA Character Receive
-		*ptrNmeaSentenceBuffer++ = charReceive;
-
-		// Capture NMEA Sentence ON
-		gpsCaptureNMEASentence = 1;
+		// Increment Pointer
+		l = 1;
 	}
 	else
 	{
 		// If capture is in progress
 		if(gpsCaptureNMEASentence)
 		{
-			// Increment Character Counter
-			gpsQtyCharsReceive++;
-
 			// Validate NMEA Sentence Type
-			if(gpsQtyCharsReceive <= 6)
+			if(l <= 6)
 			{
-				// Load pointer
-				if(gpsQtyCharsReceive == 6)
+				// Evaluate NMEA Sentece Type
+				if(l == 6)
 				{
 					if(charReceive == ',')
 					{
+						j = 0;
+						k = 0;
+
 						// Identify GPGGA NMEA Sentence
 						if(gpsNmeaSentenceGPGGAIdCounter == 5)
 						{
-							ptrNmeaSentenceBuffer = &gpsNmeaSentenceBuffer[0][0];
+							i = 0;
 						}
 						// Identify GPGSA NMEA Sentence
 						else if(gpsNmeaSentenceGPGSAIdCounter == 5)
 						{
-							ptrNmeaSentenceBuffer = &gpsNmeaSentenceBuffer[1][0];
+							i = 1;
 						}
 						// Identify GPRMC NMEA Sentence
 						else if(gpsNmeaSentenceGPRMCIdCounter == 5)
 						{
-							ptrNmeaSentenceBuffer = &gpsNmeaSentenceBuffer[2][0];
+							i = 2;
 						}
 						else
 						{
@@ -190,43 +186,63 @@ void gpsReceiveNMEASentence(uchar charReceive)
 				}
 				else
 				{
-					// Store NMEA Character Receive
-					*ptrNmeaSentenceBuffer++ = charReceive;
-					
 					// Validate GPGGA Sentence
-					if(charReceive == gpsNmeaSentenceGPGGAId[gpsQtyCharsReceive])
+					if(charReceive == gpsNmeaSentenceGPGGAId[l])
 					{
 						gpsNmeaSentenceGPGGAIdCounter++;
 					}
 					// Validate GPGSA Sentence
-					if(charReceive == gpsNmeaSentenceGPGSAId[gpsQtyCharsReceive])
+					if(charReceive == gpsNmeaSentenceGPGSAId[l])
 					{
 						gpsNmeaSentenceGPGSAIdCounter++;
 					}
 					// Validate GPRMC Sentence
-					if(charReceive == gpsNmeaSentenceGPRMCId[gpsQtyCharsReceive])
-						              
+					if(charReceive == gpsNmeaSentenceGPRMCId[l])
 					{
 						gpsNmeaSentenceGPRMCIdCounter++;
 					}
-				}				
+				}	
+				
+				// Increment Pointer
+				l++;
 			}
 			else
 			{
 				// Detect Last Character NMEA Sentence
 				if(charReceive == 0x0D)
 				{
-					// Store NMEA Character Receive
-					*ptrNmeaSentenceBuffer = charReceive;
+					// Store Receive Character
+					gpsNmeaSentenceBuffer[i][j][k] = charReceive;
+
+					// Increment counter
+					l++;
 					
 					// Capture Sentence OFF
 					gpsCaptureNMEASentence = 0;
 				}
 				else
-				{
-					// Store NMEA Character Receive
-					*ptrNmeaSentenceBuffer++ = charReceive;
+				{				
+					// Increment variable position
+					if(charReceive == ',')
+					{
+						// Last Character Variable
+						gpsNmeaSentenceBuffer[i][j][k] = '\n';
 
+						// Reset Pointers
+						j++;
+						k = 0;
+					}
+					else
+					{
+						// Store Char NMEA Sentence
+						gpsNmeaSentenceBuffer[i][j][k] = charReceive;
+
+						// Point the next character
+						k++;
+					}
+
+					// Increment counter
+					l++;
 				}
 			}
 		}
@@ -235,31 +251,59 @@ void gpsReceiveNMEASentence(uchar charReceive)
 
 /**
  * @brief Obtain Struct NMEA GPRMC
+ * @param utcTime UTC Time Zone
  * 0000000000,1,222222222,3,4444444444,5,6666,77777,888888
  * 181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
  */
-gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence()
+gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(char utcTimeZone)
 {
 	uchar tens, units;
+	char hourTimeZone;
 
 	// If Sentence is Valid, parse all values
-	if(gpsNmeaSentenceBuffer[2][11] == 'A')
+	if(gpsNmeaSentenceBuffer[2][1][0] == 'A')
 	{
 		// Obtain RTC Hour
-		tens = gpsNmeaSentenceBuffer[2][0] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][1] - 0x30;
-		structNmeaGPRMC.rtcHour = (tens * 10) + units;
-
+		tens = gpsNmeaSentenceBuffer[2][0][0] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][0][1] - 0x30;
+		hourTimeZone = (tens * 10) + units + utcTimeZone;
+		
 		// Obtain RTC Minute
-		tens = gpsNmeaSentenceBuffer[2][2] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][3] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][0][2] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][0][3] - 0x30;
 		structNmeaGPRMC.rtcMinute = (tens * 10) + units;
 
 		// Obtain RTC Second
-		tens = gpsNmeaSentenceBuffer[2][4] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][5] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][0][4] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][0][5] - 0x30;
 		structNmeaGPRMC.rtcSecond = (tens * 10) + units;
 
+		// Obtain RTC Day
+		tens = gpsNmeaSentenceBuffer[2][8][0] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][8][1] - 0x30;
+		structNmeaGPRMC.rtcDay = (tens * 10) + units;
+
+		// Obtain RTC Month
+		tens = gpsNmeaSentenceBuffer[2][8][2] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][8][3] - 0x30;
+		structNmeaGPRMC.rtcMonth = (tens * 10) + units;
+
+		// Obtain RTC Year
+		tens = gpsNmeaSentenceBuffer[2][8][4] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][8][5] - 0x30;
+		structNmeaGPRMC.rtcYear = (tens * 10) + units;
+
+		// Verify if the hour is negative, and correct situation
+		if(hourTimeZone < 0)
+		{
+			structNmeaGPRMC.rtcHour = 24 + hourTimeZone;
+			structNmeaGPRMC.rtcDay--;
+		}
+		else
+		{
+			structNmeaGPRMC.rtcHour = hourTimeZone;
+		}
+		
 		// Valid Sentence
 		structNmeaGPRMC.state = 'A';
 	}
