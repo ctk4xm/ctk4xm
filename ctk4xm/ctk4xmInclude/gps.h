@@ -38,11 +38,9 @@ typedef struct
 	uchar rtcMinute;
 	uchar rtcSecond;
 	uchar state;
-	uchar latitudeHour;
-	float latitudeMinuteSecond;
+	float latitudeHourMinuteSecond;
 	uchar latitudeNS;
-	uchar longitudeHour;
-	float longitudeMinuteSecond;
+	float longitudeHourMinuteSecond;
 	uchar longitudeEW;
 	float speedOverGround;
 	float course;
@@ -68,6 +66,13 @@ void gpsReceiveNMEASentence(uchar charReceive);
  * @param utcTimeZone UTC Time Zone
  */
 gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(char utcTimeZone);
+
+/**
+ * @brief Obtain Float Value Variable
+ * @param nmeaSentence NMEA Sentence
+ * @param varPosition Position to convert
+ */
+float gpsObtainFloatValue(uchar nmeaSentence, uchar varPosition);
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty

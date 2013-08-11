@@ -138,8 +138,12 @@ void application()
 			lcdWrite('/');
 			lcdDataDecFormat(structNmeaGPRMC.rtcMonth, 2);
 			lcdWrite('/');
-			lcdDataDecFormat(structNmeaGPRMC.rtcYear, 4);
+			lcdDataDecFormat(structNmeaGPRMC.rtcYear, 2);
 			
+			lcdSetCursor(1,1);
+			lcdDataDoubleFormat(structNmeaGPRMC.latitudeHourMinuteSecond, 4, 4);
+			lcdDataDoubleFormat(structNmeaGPRMC.longitudeHourMinuteSecond, 4, 4);
+
 			// Export data to Display 7-Seg
 			display7SegWriteDecFormat(1, structNmeaGPRMC.rtcHour, 2);
 			display7SegWriteDecFormat(3, structNmeaGPRMC.rtcMinute, 2);

@@ -304,6 +304,18 @@ gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(char utcTimeZone)
 			structNmeaGPRMC.rtcHour = hourTimeZone;
 		}
 		
+		// Obtain Latitude Hour Minute Second
+		structNmeaGPRMC.latitudeHourMinuteSecond = gpsObtainFloatValue(2, 2);
+
+		// Obtain Longitude Hour Minute Second
+		structNmeaGPRMC.longitudeHourMinuteSecond = gpsObtainFloatValue(2, 4);
+
+		// Obtain Speed Over Ground
+		structNmeaGPRMC.speedOverGround = gpsObtainFloatValue(2, 6);
+
+		// Obtain Course
+		structNmeaGPRMC.course = gpsObtainFloatValue(2, 7);
+
 		// Valid Sentence
 		structNmeaGPRMC.state = 'A';
 	}
@@ -312,6 +324,51 @@ gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(char utcTimeZone)
 		structNmeaGPRMC.state = 'V';
 	}
 	return structNmeaGPRMC;
+}
+
+/**
+ * @brief Obtain Float Value Variable
+ * @param nmeaSentence NMEA Sentence
+ * @param varPosition Position to convert
+ */
+float gpsObtainFloatValue(uchar nmeaSentence, uchar varPosition)
+{
+	uchar z;
+	uchar integerPart;
+	uchar decimalPart;
+	uchar qtyDecimal;
+	float value;
+
+	// Obtain Speed Over Ground
+	z = 0;
+
+	// Initialize Accumulators
+	integerPart = 0;
+	decimalPart = 0;
+	qtyDecimal = 0;
+
+	// Obtain integer part
+	while(gpsNmeaSentenceBuffer[nmeaSentence][varPosition][z] != ',')
+	{
+		integerPart *= 10;
+		integerPart += gpsNmeaSentenceBuffer[nmeaSentence][varPosition][z];
+		z++;
+	}
+	z++;
+
+	// Obtain decimal part
+	while(gpsNmeaSentenceBuffer[nmeaSentence][varPosition][z] != '\n')
+	{
+		decimalPart *= 10;
+		decimalPart += gpsNmeaSentenceBuffer[nmeaSentence][varPosition][z];
+		z++;
+		qtyDecimal++;
+	}
+
+	// Concatenate integer and decimal part
+	value = integerPart + (decimalPart/(10 * qtyDecimal));
+
+	return value;
 }
 
 
