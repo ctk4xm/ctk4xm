@@ -123,7 +123,7 @@ void application()
 	while(1)
 	{
 		// Get NMEA GPRMC
-		gpsStructNmeaGPRMC structNmeaGPRMC = gpsGetNmeaGPRMCSentence(-5);
+		gpsStructNmeaGPRMC structNmeaGPRMC = gpsGetNmeaGPRMCSentence(5);
 
 		if(structNmeaGPRMC.state == 'A')
 		{

@@ -65,7 +65,7 @@ void gpsReceiveNMEASentence(uchar charReceive);
  * @brief Obtain Struct NMEA GPRMC
  * @param utcTimeZone UTC Time Zone
  */
-gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(char utcTimeZone);
+gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(uchar utcTimeZone);
 
 /**
  * @brief Obtain Float Value Variable

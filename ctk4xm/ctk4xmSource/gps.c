@@ -154,7 +154,7 @@ void gpsReceiveNMEASentence(uchar charReceive)
 				{
 					if(charReceive == ',')
 					{
-						j = 0;
+						j = 1;
 						k = 0;
 
 						// Identify GPGGA NMEA Sentence
@@ -177,6 +177,9 @@ void gpsReceiveNMEASentence(uchar charReceive)
 							// Capture NMEA Sentence OFF
 							gpsCaptureNMEASentence = 0;
 						}
+
+						// Indicate NMEA Capture
+						gpsNmeaSentenceBuffer[i][0][0] = 'C';
 					}
 					else
 					{
@@ -216,6 +219,9 @@ void gpsReceiveNMEASentence(uchar charReceive)
 
 					// Increment counter
 					l++;
+
+					// Indicate NMEA Finish
+					gpsNmeaSentenceBuffer[i][0][0] = 'F';
 					
 					// Capture Sentence OFF
 					gpsCaptureNMEASentence = 0;
@@ -252,45 +258,45 @@ void gpsReceiveNMEASentence(uchar charReceive)
 /**
  * @brief Obtain Struct NMEA GPRMC
  * @param utcTime UTC Time Zone
- * 0000000000,1,222222222,3,4444444444,5,6666,77777,888888
- * 181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
+ * 0,1111111111,2,333333333,4,5555555555,6,7777,88888,999999,10
+ * C,181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
  */
-gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(char utcTimeZone)
+gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(uchar utcTimeZone)
 {
 	uchar tens, units;
 	char hourTimeZone;
 
 	// If Sentence is Valid, parse all values
-	if(gpsNmeaSentenceBuffer[2][1][0] == 'A')
+	if(gpsNmeaSentenceBuffer[2][0][0] == 'F' & gpsNmeaSentenceBuffer[2][2][0] == 'A')
 	{
 		// Obtain RTC Hour
-		tens = gpsNmeaSentenceBuffer[2][0][0] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][0][1] - 0x30;
-		hourTimeZone = (tens * 10) + units + utcTimeZone;
+		tens = gpsNmeaSentenceBuffer[2][1][0] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][1][1] - 0x30;
+		hourTimeZone = (tens * 10) + units - utcTimeZone;
 		
 		// Obtain RTC Minute
-		tens = gpsNmeaSentenceBuffer[2][0][2] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][0][3] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][1][2] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][1][3] - 0x30;
 		structNmeaGPRMC.rtcMinute = (tens * 10) + units;
 
 		// Obtain RTC Second
-		tens = gpsNmeaSentenceBuffer[2][0][4] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][0][5] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][1][4] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][1][5] - 0x30;
 		structNmeaGPRMC.rtcSecond = (tens * 10) + units;
 
 		// Obtain RTC Day
-		tens = gpsNmeaSentenceBuffer[2][8][0] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][8][1] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][9][0] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][9][1] - 0x30;
 		structNmeaGPRMC.rtcDay = (tens * 10) + units;
 
 		// Obtain RTC Month
-		tens = gpsNmeaSentenceBuffer[2][8][2] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][8][3] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][9][2] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][9][3] - 0x30;
 		structNmeaGPRMC.rtcMonth = (tens * 10) + units;
 
 		// Obtain RTC Year
-		tens = gpsNmeaSentenceBuffer[2][8][4] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][8][5] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][9][4] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][9][5] - 0x30;
 		structNmeaGPRMC.rtcYear = (tens * 10) + units;
 
 		// Verify if the hour is negative, and correct situation
@@ -305,16 +311,16 @@ gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(char utcTimeZone)
 		}
 		
 		// Obtain Latitude Hour Minute Second
-		structNmeaGPRMC.latitudeHourMinuteSecond = gpsObtainFloatValue(2, 2);
+		structNmeaGPRMC.latitudeHourMinuteSecond = gpsObtainFloatValue(2, 3);
 
 		// Obtain Longitude Hour Minute Second
-		structNmeaGPRMC.longitudeHourMinuteSecond = gpsObtainFloatValue(2, 4);
+		structNmeaGPRMC.longitudeHourMinuteSecond = gpsObtainFloatValue(2, 5);
 
 		// Obtain Speed Over Ground
-		structNmeaGPRMC.speedOverGround = gpsObtainFloatValue(2, 6);
+		structNmeaGPRMC.speedOverGround = gpsObtainFloatValue(2, 7);
 
 		// Obtain Course
-		structNmeaGPRMC.course = gpsObtainFloatValue(2, 7);
+		structNmeaGPRMC.course = gpsObtainFloatValue(2, 8);
 
 		// Valid Sentence
 		structNmeaGPRMC.state = 'A';
@@ -333,40 +339,48 @@ gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(char utcTimeZone)
  */
 float gpsObtainFloatValue(uchar nmeaSentence, uchar varPosition)
 {
-	uchar z;
-	uchar integerPart;
-	uchar decimalPart;
+	uchar i;
+	uint integerPart;
+	uint decimalPart;
+	uint decimalDivisor;
 	uchar qtyDecimal;
 	float value;
 
-	// Obtain Speed Over Ground
-	z = 0;
-
-	// Initialize Accumulators
+	// Initialize Variables
+	i = 0;
 	integerPart = 0;
 	decimalPart = 0;
 	qtyDecimal = 0;
 
 	// Obtain integer part
-	while(gpsNmeaSentenceBuffer[nmeaSentence][varPosition][z] != ',')
+	while(gpsNmeaSentenceBuffer[nmeaSentence][varPosition][i] != '.')
 	{
 		integerPart *= 10;
-		integerPart += gpsNmeaSentenceBuffer[nmeaSentence][varPosition][z];
-		z++;
+		integerPart += (gpsNmeaSentenceBuffer[nmeaSentence][varPosition][i] - 0x30);
+		i++;
 	}
-	z++;
+	i++;
 
 	// Obtain decimal part
-	while(gpsNmeaSentenceBuffer[nmeaSentence][varPosition][z] != '\n')
+	while(gpsNmeaSentenceBuffer[nmeaSentence][varPosition][i] != '\n')
 	{
 		decimalPart *= 10;
-		decimalPart += gpsNmeaSentenceBuffer[nmeaSentence][varPosition][z];
-		z++;
+		decimalPart += (gpsNmeaSentenceBuffer[nmeaSentence][varPosition][i] - 0x30);
+		i++;
 		qtyDecimal++;
 	}
 
+	// Initialize decimal divisor
+	decimalDivisor = 1;
+
+	// Calculate decimal divisor
+	for(i = 0; i < qtyDecimal; i++)
+	{
+		decimalDivisor *= 10;
+	}
+
 	// Concatenate integer and decimal part
-	value = integerPart + (decimalPart/(10 * qtyDecimal));
+	value = integerPart + (decimalPart/decimalDivisor);
 
 	return value;
 }

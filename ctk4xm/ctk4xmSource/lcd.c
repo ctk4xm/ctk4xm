@@ -524,56 +524,40 @@ void lcdDataDoubleFormatSetPosition(uchar row, uchar column, double dataExport, 
 void lcdDataDoubleFormat(double dataExport, uchar quantityDigits, uchar quantityDecimals)
 {
 	uchar i = 0;
-	uint divisorDigits = 1;
-	uint divisorDecimals = 1;
-	uint digitPart = 0;
-	uint decimalPart = 0;
+	float divisorInteger = 1;
+	float divisorDecimal = 1;
 	uchar digitExport = 0;
 
-	// Get Divisor Digits
+	// Get Integer Digits
 	for(i = 1; i < quantityDigits; i++)
 	{
-		divisorDigits *= 10;
+		divisorInteger *= 10;
 	}
-
-	// Get Divisor Decimals
+	
+	// Get Decimal Digits
 	for(i = 1; i < quantityDecimals; i++)
 	{
-		divisorDecimals *= 10;
-	}
+		divisorDecimal *= 10;
+	}	
 
-	// Separate digit and part
-	digitPart = (uchar) dataExport;
-
-	// Separate decimal part
-	dataExport -= digitPart;
-	dataExport *= (divisorDecimals * 10);
-	decimalPart = (uchar) dataExport;
-
-	// Get and Export Digits
-	for(i = 1; i <= quantityDigits; i++)
+	// Print Integer Digits
+	for(i = 1; i < quantityDigits; i++)
 	{
-		// Export Digit
-		digitExport = (digitPart / divisorDigits) + 0x30;
+		digitExport = dataExport / divisorInteger;
+		dataExport =- (digitExport * 1000);
 		lcdData(digitExport);
-
-		// Decrement export data and divisor
-		digitPart %= divisorDigits;
-		divisorDigits /= 10;
-	}
-
-	lcdWrite('.');
-
-	// Get and Export Decimals
-	for(i = 1; i <= quantityDecimals; i++)
+		divisorInteger /= 10;
+	}	
+	
+	// Fixed Decimal Digits
+	dataExport *= divisorDecimal;
+	
+	// Print Decimal Digits
+	for(i = 1; i < quantityDecimals; i++)
 	{
-		// Export Digit
-		digitExport = (decimalPart / divisorDecimals) + 0x30;
+		digitExport = dataExport / divisorDecimal;
 		lcdData(digitExport);
-
-		// Decrement export data and divisor
-		decimalPart %= divisorDecimals;
-		divisorDecimals /= 10;
+		divisorDecimal /= 10;
 	}
 }
 
