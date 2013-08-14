@@ -207,22 +207,22 @@ void lcdDataDecFormatSetPosition(uchar row, uchar column, uint dataExport, uchar
 void lcdDataDecFormat(uint dataExport, uchar quantityDigits);
 
 /**
- * @brief Send Data Double Format LCD Module
+ * @brief Send Data Float Format LCD Module
  * @param row LCD Row
  * @param column LCD Column
  * @param dataExport Data to Send to LCD Module
  * @param quantityDigits Quantity Digits
  * @param quantityDecimals Quantity Decimals
  */
-void lcdDataDoubleFormatSetPosition(uchar row, uchar column, double dataExport, uchar quantityDigits, uchar quantityDecimals);
+void lcdDataFloatFormatSetPosition(uchar row, uchar column, float dataExport, uchar quantityDigits, uchar quantityDecimals);
 
 /**
- * @brief Send Data Double Format LCD Module
+ * @brief Send Data Float Format LCD Module
  * @param dataExport Data to Send to LCD Module
  * @param quantityDigits Quantity Digits
  * @param quantityDecimals Quantity Decimals
  */
-void lcdDataDoubleFormat(double dataExport, uchar quantityDigits, uchar quantityDecimals);
+void lcdDataFloatFormat(float dataExport, uchar quantityDigits, uchar quantityDecimals);
 
 /**
  * @brief Send Data Date Format LCD Module

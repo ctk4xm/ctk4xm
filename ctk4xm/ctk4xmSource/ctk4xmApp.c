@@ -87,12 +87,6 @@ uchar nmeaSentenceData [15][15];
  */
 void application()
 {
-	// NMEA Buffer
-	uchar *ptrNmeaSentence;
-	uchar *ptrNmeaData;
-
-	uchar i, j, k, counter = 0;
-
 	// Stop Watchdog Timer
 	coreStopWatchdogTimer();
 
@@ -123,9 +117,9 @@ void application()
 	while(1)
 	{
 		// Get NMEA GPRMC
-		gpsStructNmeaGPRMC structNmeaGPRMC = gpsGetNmeaGPRMCSentence(5);
+		gpsStructNmeaGPRMC structNmeaGPRMC = gpsParseNmeaGPRMCSentence(5);
 
-		if(structNmeaGPRMC.state == 'A')
+		if(structNmeaGPRMC.capture == 'F' & structNmeaGPRMC.state == 'A')
 		{
 			// Export data to LCD
 			lcdSetCursor(2,1);
@@ -141,8 +135,10 @@ void application()
 			lcdDataDecFormat(structNmeaGPRMC.rtcYear, 2);
 			
 			lcdSetCursor(1,1);
-			lcdDataDoubleFormat(structNmeaGPRMC.latitudeHourMinuteSecond, 4, 4);
-			lcdDataDoubleFormat(structNmeaGPRMC.longitudeHourMinuteSecond, 4, 4);
+			lcdDataDecFormat(structNmeaGPRMC.latitudeHour, 2);
+			lcdDataFloatFormat(structNmeaGPRMC.latitudeMinuteSecond, 2, 4);
+			lcdDataDecFormat(structNmeaGPRMC.longitudeHour, 2);
+			lcdDataFloatFormat(structNmeaGPRMC.longitudeMinuteSecond, 2, 4);
 
 			// Export data to Display 7-Seg
 			display7SegWriteDecFormat(1, structNmeaGPRMC.rtcHour, 2);

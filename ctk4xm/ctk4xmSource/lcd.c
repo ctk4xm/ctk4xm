@@ -506,22 +506,22 @@ void lcdDataDecFormat(uint dataExport, uchar quantityDigits)
  * @param quantityDigits Quantity Digits
  * @param quantityDecimals Quantity Decimals
  */
-void lcdDataDoubleFormatSetPosition(uchar row, uchar column, double dataExport, uchar quantityDigits, uchar quantityDecimals)
+void lcdDataFloatFormatSetPosition(uchar row, uchar column, float dataExport, uchar quantityDigits, uchar quantityDecimals)
 {
 	// LCD Position
 	lcdSetCursor(row, column);
 
 	// Send Data Double Format LCD Module
-	lcdDataDoubleFormat(dataExport, quantityDigits, quantityDecimals);
+	lcdDataFloatFormat(dataExport, quantityDigits, quantityDecimals);
 }
 
 /**
- * @brief Send Data Double Format LCD Module
+ * @brief Send Data Float Format LCD Module
  * @param dataExport Data to Send to LCD Module
  * @param quantityDigits Quantity Digits
  * @param quantityDecimals Quantity Decimals
  */
-void lcdDataDoubleFormat(double dataExport, uchar quantityDigits, uchar quantityDecimals)
+void lcdDataFloatFormat(float dataExport, uchar quantityDigits, uchar quantityDecimals)
 {
 	uchar i = 0;
 	float divisorInteger = 1;
@@ -543,7 +543,7 @@ void lcdDataDoubleFormat(double dataExport, uchar quantityDigits, uchar quantity
 	// Print Integer Digits
 	for(i = 1; i < quantityDigits; i++)
 	{
-		digitExport = dataExport / divisorInteger;
+		digitExport = (uchar) (dataExport / divisorInteger);
 		dataExport =- (digitExport * 1000);
 		lcdData(digitExport);
 		divisorInteger /= 10;
@@ -555,7 +555,7 @@ void lcdDataDoubleFormat(double dataExport, uchar quantityDigits, uchar quantity
 	// Print Decimal Digits
 	for(i = 1; i < quantityDecimals; i++)
 	{
-		digitExport = dataExport / divisorDecimal;
+		digitExport = (uchar) (dataExport / divisorDecimal);
 		lcdData(digitExport);
 		divisorDecimal /= 10;
 	}

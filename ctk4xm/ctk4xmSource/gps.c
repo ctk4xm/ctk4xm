@@ -40,7 +40,7 @@ uchar gpsNmeaSentenceBuffer[3][15][15];
 uchar *ptrNmeaSentenceBuffer;
 
 /**
- * Capture NMEA Sentence
+ * Capture NMEA Sentence Flag
  */
 uchar gpsCaptureNMEASentence;
 
@@ -149,7 +149,7 @@ void gpsReceiveNMEASentence(uchar charReceive)
 			// Validate NMEA Sentence Type
 			if(l <= 6)
 			{
-				// Evaluate NMEA Sentece Type
+				// Evaluate NMEA Sentence Type
 				if(l == 6)
 				{
 					if(charReceive == ',')
@@ -180,6 +180,7 @@ void gpsReceiveNMEASentence(uchar charReceive)
 
 						// Indicate NMEA Capture
 						gpsNmeaSentenceBuffer[i][0][0] = 'C';
+						structNmeaGPRMC.capture = 'C';
 					}
 					else
 					{
@@ -222,7 +223,7 @@ void gpsReceiveNMEASentence(uchar charReceive)
 
 					// Indicate NMEA Finish
 					gpsNmeaSentenceBuffer[i][0][0] = 'F';
-					
+								
 					// Capture Sentence OFF
 					gpsCaptureNMEASentence = 0;
 				}
@@ -256,15 +257,16 @@ void gpsReceiveNMEASentence(uchar charReceive)
 }
 
 /**
- * @brief Obtain Struct NMEA GPRMC
+ * @brief Obtain and Parse NMEA GPRMC Sentence
  * @param utcTime UTC Time Zone
  * 0,1111111111,2,333333333,4,5555555555,6,7777,88888,999999,10
  * C,181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
  */
-gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(uchar utcTimeZone)
+gpsStructNmeaGPRMC gpsParseNmeaGPRMCSentence(uchar utcTimeZone)
 {
-	uchar tens, units;
-	char hourTimeZone;
+	volatile uchar tens, units;
+	volatile signed char hourTimeZone;
+	volatile float longitude, latitude;
 
 	// If Sentence is Valid, parse all values
 	if(gpsNmeaSentenceBuffer[2][0][0] == 'F' & gpsNmeaSentenceBuffer[2][2][0] == 'A')
@@ -311,10 +313,14 @@ gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(uchar utcTimeZone)
 		}
 		
 		// Obtain Latitude Hour Minute Second
-		structNmeaGPRMC.latitudeHourMinuteSecond = gpsObtainFloatValue(2, 3);
+		latitude = gpsObtainFloatValue(2, 3);
+		structNmeaGPRMC.latitudeHour = (uchar) (latitude/100);
+		structNmeaGPRMC.latitudeMinuteSecond = latitude - (structNmeaGPRMC.latitudeHour * 100);
 
 		// Obtain Longitude Hour Minute Second
-		structNmeaGPRMC.longitudeHourMinuteSecond = gpsObtainFloatValue(2, 5);
+		longitude = gpsObtainFloatValue(2, 5);
+		structNmeaGPRMC.longitudeHour = (uchar) (longitude/100);
+		structNmeaGPRMC.longitudeMinuteSecond = longitude - (structNmeaGPRMC.longitudeHour * 100);
 
 		// Obtain Speed Over Ground
 		structNmeaGPRMC.speedOverGround = gpsObtainFloatValue(2, 7);
@@ -324,11 +330,14 @@ gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(uchar utcTimeZone)
 
 		// Valid Sentence
 		structNmeaGPRMC.state = 'A';
+		// Finish Capture
+		structNmeaGPRMC.capture = 'F';		
 	}
 	else
 	{
 		structNmeaGPRMC.state = 'V';
-	}
+		structNmeaGPRMC.capture = 'C';
+	}	
 	return structNmeaGPRMC;
 }
 
@@ -380,7 +389,7 @@ float gpsObtainFloatValue(uchar nmeaSentence, uchar varPosition)
 	}
 
 	// Concatenate integer and decimal part
-	value = integerPart + (decimalPart/decimalDivisor);
+	value = integerPart + ((float) decimalPart/(float) decimalDivisor);
 
 	return value;
 }

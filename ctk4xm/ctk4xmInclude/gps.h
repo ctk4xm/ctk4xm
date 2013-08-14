@@ -34,13 +34,16 @@
  */
 typedef struct
 {
+	uchar capture;
 	uchar rtcHour;
 	uchar rtcMinute;
 	uchar rtcSecond;
 	uchar state;
-	float latitudeHourMinuteSecond;
+	uchar latitudeHour;
+	float latitudeMinuteSecond;
 	uchar latitudeNS;
-	float longitudeHourMinuteSecond;
+	uchar longitudeHour;
+	float longitudeMinuteSecond;
 	uchar longitudeEW;
 	float speedOverGround;
 	float course;
@@ -62,10 +65,12 @@ void gpsInit();
 void gpsReceiveNMEASentence(uchar charReceive);
 
 /**
- * @brief Obtain Struct NMEA GPRMC
- * @param utcTimeZone UTC Time Zone
+ * @brief Obtain and Parse NMEA GPRMC Sentence
+ * @param utcTime UTC Time Zone
+ * 0,1111111111,2,333333333,4,5555555555,6,7777,88888,999999,10
+ * C,181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
  */
-gpsStructNmeaGPRMC gpsGetNmeaGPRMCSentence(uchar utcTimeZone);
+gpsStructNmeaGPRMC gpsParseNmeaGPRMCSentence(uchar utcTimeZone);
 
 /**
  * @brief Obtain Float Value Variable
