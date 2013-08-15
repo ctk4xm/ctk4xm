@@ -117,33 +117,36 @@ void application()
 	while(1)
 	{
 		// Get NMEA GPRMC
-		gpsStructNmeaGPRMC structNmeaGPRMC = gpsParseNmeaGPRMCSentence(5);
+		gpsStructNmeaGPRMC *structNmeaGPRMC = gpsParseNmeaGPRMCSentence(5);
 
-		if(structNmeaGPRMC.capture == 'F' & structNmeaGPRMC.state == 'A')
+		if((*structNmeaGPRMC).isValid == 'Y' & (*structNmeaGPRMC).wasRead == 'N')
 		{
 			// Export data to LCD
 			lcdSetCursor(2,1);
-			lcdDataDecFormat(structNmeaGPRMC.rtcHour, 2);
+			lcdDataDecFormat((*structNmeaGPRMC).rtcHour, 2);
 			lcdWrite(':');
-			lcdDataDecFormat(structNmeaGPRMC.rtcMinute, 2);
+			lcdDataDecFormat((*structNmeaGPRMC).rtcMinute, 2);
 			lcdWrite(':');
-			lcdDataDecFormat(structNmeaGPRMC.rtcSecond, 2);
-			lcdDataDecFormat(structNmeaGPRMC.rtcDay, 2);
+			lcdDataDecFormat((*structNmeaGPRMC).rtcSecond, 2);
+			lcdDataDecFormat((*structNmeaGPRMC).rtcDay, 2);
 			lcdWrite('/');
-			lcdDataDecFormat(structNmeaGPRMC.rtcMonth, 2);
+			lcdDataDecFormat((*structNmeaGPRMC).rtcMonth, 2);
 			lcdWrite('/');
-			lcdDataDecFormat(structNmeaGPRMC.rtcYear, 2);
+			lcdDataDecFormat((*structNmeaGPRMC).rtcYear, 2);
 			
 			lcdSetCursor(1,1);
-			lcdDataDecFormat(structNmeaGPRMC.latitudeHour, 2);
-			lcdDataFloatFormat(structNmeaGPRMC.latitudeMinuteSecond, 2, 4);
-			lcdDataDecFormat(structNmeaGPRMC.longitudeHour, 2);
-			lcdDataFloatFormat(structNmeaGPRMC.longitudeMinuteSecond, 2, 4);
+			lcdDataDecFormat((*structNmeaGPRMC).latitudeHour, 2);
+			lcdDataFloatFormat((*structNmeaGPRMC).latitudeMinuteSecond, 2, 4);
+			lcdDataDecFormat((*structNmeaGPRMC).longitudeHour, 2);
+			lcdDataFloatFormat((*structNmeaGPRMC).longitudeMinuteSecond, 2, 4);
 
 			// Export data to Display 7-Seg
-			display7SegWriteDecFormat(1, structNmeaGPRMC.rtcHour, 2);
-			display7SegWriteDecFormat(3, structNmeaGPRMC.rtcMinute, 2);
-			display7SegWriteDecFormat(5, structNmeaGPRMC.rtcSecond, 2);
+			display7SegWriteDecFormat(1, (*structNmeaGPRMC).rtcHour, 2);
+			display7SegWriteDecFormat(3, (*structNmeaGPRMC).rtcMinute, 2);
+			display7SegWriteDecFormat(5, (*structNmeaGPRMC).rtcSecond, 2);
+
+			// Finally set was read
+			(*structNmeaGPRMC).wasRead = 'Y';
 		}
 	}
 }

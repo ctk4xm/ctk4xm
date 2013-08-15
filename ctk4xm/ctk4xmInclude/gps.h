@@ -34,11 +34,9 @@
  */
 typedef struct
 {
-	uchar capture;
 	uchar rtcHour;
 	uchar rtcMinute;
 	uchar rtcSecond;
-	uchar state;
 	uchar latitudeHour;
 	float latitudeMinuteSecond;
 	uchar latitudeNS;
@@ -50,6 +48,8 @@ typedef struct
 	uchar rtcDay;
 	uchar rtcMonth;
 	uchar rtcYear;
+	uchar isValid;
+	uchar wasRead;
 } gpsStructNmeaGPRMC;
 
 
@@ -70,7 +70,7 @@ void gpsReceiveNMEASentence(uchar charReceive);
  * 0,1111111111,2,333333333,4,5555555555,6,7777,88888,999999,10
  * C,181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
  */
-gpsStructNmeaGPRMC gpsParseNmeaGPRMCSentence(uchar utcTimeZone);
+gpsStructNmeaGPRMC * gpsParseNmeaGPRMCSentence(uchar utcTimeZone);
 
 /**
  * @brief Obtain Float Value Variable
