@@ -159,7 +159,7 @@ void gpsReceiveNMEASentence(uchar charReceive)
 				{
 					if(charReceive == ',')
 					{
-						j = 1;
+						j = 0;
 						k = 0;
 
 						// Identify GPGGA NMEA Sentence
@@ -176,9 +176,6 @@ void gpsReceiveNMEASentence(uchar charReceive)
 						else if(gpsNmeaSentenceGPRMCIdCounter == 5)
 						{
 							i = 2;
-
-							// Indicate Sentence Capture
-							gpsNmeaSentenceBuffer[2][0][0] = 'C';
 						}
 						else
 						{
@@ -287,36 +284,36 @@ void gpsParseNmeaGPRMCSentence(uchar utcTimeZone)
 	volatile float longitude, latitude;
 
 	// If Sentence is Valid, parse all values
-	if(gpsNmeaSentenceBuffer[2][0][0] == 'F' & gpsNmeaSentenceBuffer[2][2][0] == 'A')
+	if(gpsNmeaSentenceBuffer[2][1][0] == 'A')
 	{
 		// Obtain RTC Hour
-		tens = gpsNmeaSentenceBuffer[2][1][0] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][1][1] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][0][0] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][0][1] - 0x30;
 		hourTimeZone = (tens * 10) + units - utcTimeZone;
 
 		// Obtain RTC Minute
-		tens = gpsNmeaSentenceBuffer[2][1][2] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][1][3] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][0][2] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][0][3] - 0x30;
 		structNmeaGPRMC.rtcMinute = (tens * 10) + units;
 
 		// Obtain RTC Second
-		tens = gpsNmeaSentenceBuffer[2][1][4] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][1][5] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][0][4] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][0][5] - 0x30;
 		structNmeaGPRMC.rtcSecond = (tens * 10) + units;
 
 		// Obtain RTC Day
-		tens = gpsNmeaSentenceBuffer[2][9][0] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][9][1] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][8][0] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][8][1] - 0x30;
 		structNmeaGPRMC.rtcDay = (tens * 10) + units;
 
 		// Obtain RTC Month
-		tens = gpsNmeaSentenceBuffer[2][9][2] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][9][3] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][8][2] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][8][3] - 0x30;
 		structNmeaGPRMC.rtcMonth = (tens * 10) + units;
 
 		// Obtain RTC Year
-		tens = gpsNmeaSentenceBuffer[2][9][4] - 0x30;
-		units = gpsNmeaSentenceBuffer[2][9][5] - 0x30;
+		tens = gpsNmeaSentenceBuffer[2][8][4] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][8][5] - 0x30;
 		structNmeaGPRMC.rtcYear = (tens * 10) + units;
 
 		// Verify if the hour is negative, and correct situation
@@ -331,20 +328,20 @@ void gpsParseNmeaGPRMCSentence(uchar utcTimeZone)
 		}
 
 		// Obtain Latitude Hour Minute Second
-		latitude = gpsObtainFloatValue(2, 3);
+		latitude = gpsObtainFloatValue(2, 2);
 		structNmeaGPRMC.latitudeHour = (uchar) (latitude/100);
 		structNmeaGPRMC.latitudeMinuteSecond = latitude - (structNmeaGPRMC.latitudeHour * 100);
 
 		// Obtain Longitude Hour Minute Second
-		longitude = gpsObtainFloatValue(2, 5);
+		longitude = gpsObtainFloatValue(2, 4);
 		structNmeaGPRMC.longitudeHour = (uchar) (longitude/100);
 		structNmeaGPRMC.longitudeMinuteSecond = longitude - (structNmeaGPRMC.longitudeHour * 100);
 
 		// Obtain Speed Over Ground
-		structNmeaGPRMC.speedOverGround = gpsObtainFloatValue(2, 7);
+		structNmeaGPRMC.speedOverGround = gpsObtainFloatValue(2, 6);
 
 		// Obtain Course
-		structNmeaGPRMC.course = gpsObtainFloatValue(2, 8);
+		structNmeaGPRMC.course = gpsObtainFloatValue(2, 7);
 
 		// Valid Sentence without read
 		structNmeaGPRMC.isValid = 'Y';
