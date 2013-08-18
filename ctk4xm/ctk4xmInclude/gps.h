@@ -1,7 +1,7 @@
 /**
  *  @file gps.h
  *  @brief Module that allows work GPS
- *  @date 10/08/2013
+ *  @date 18/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -70,7 +70,7 @@ void gpsReceiveNMEASentence(uchar charReceive);
  * 0,1111111111,2,333333333,4,5555555555,6,7777,88888,999999,10
  * C,181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
  */
-gpsStructNmeaGPRMC * gpsParseNmeaGPRMCSentence(uchar utcTimeZone);
+void gpsParseNmeaGPRMCSentence(uchar utcTimeZone);
 
 /**
  * @brief Obtain Float Value Variable
@@ -78,6 +78,12 @@ gpsStructNmeaGPRMC * gpsParseNmeaGPRMCSentence(uchar utcTimeZone);
  * @param varPosition Position to convert
  */
 float gpsObtainFloatValue(uchar nmeaSentence, uchar varPosition);
+
+
+/**
+ * Get NMEA RMC Struct
+ */
+gpsStructNmeaGPRMC * gpsNmeaGPRMCStruct();
 
 /**
  * @brief Calculate the distance geodesic between two points according to algorithm Thaddeus Vincenty

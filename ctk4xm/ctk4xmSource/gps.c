@@ -1,7 +1,7 @@
 /**
  *  @file gps.c
  *  @brief Module that allows work GPS
- *  @date 10/08/2013
+ *  @date 18/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -98,6 +98,11 @@ void gpsInit()
 {
 	// Capture NMEA Sentence OFF
 	gpsCaptureNMEASentence = 0;
+
+
+	// Initialize Structs
+	structNmeaGPRMC.isValid = 'N';
+	structNmeaGPRMC.wasRead = 'Y';
 
 	// Configure GPS Pins
 	ioDigitalOutput(GPS_TX);
@@ -233,10 +238,8 @@ void gpsReceiveNMEASentence(uchar charReceive)
 					// Identify GPRMC NMEA Sentence
 					else if(gpsNmeaSentenceGPRMCIdCounter == 5)
 					{
-						// Indicate Sentence Finish
-						gpsNmeaSentenceBuffer[2][0][0] = 'F';
-						structNmeaGPRMC.isValid = 'N';
-						structNmeaGPRMC.wasRead = 'N';
+						// Get NMEA GPRMC
+						gpsParseNmeaGPRMCSentence(5);
 					}
 								
 					// Capture Sentence OFF
@@ -277,85 +280,76 @@ void gpsReceiveNMEASentence(uchar charReceive)
  * 0,1111111111,2,333333333,4,5555555555,6,7777,88888,999999,10
  * C,181611.863,A,0000.0000,N,00000.0000,W,0.00,40.38,030813,,,A*47
  */
-gpsStructNmeaGPRMC * gpsParseNmeaGPRMCSentence(uchar utcTimeZone)
+void gpsParseNmeaGPRMCSentence(uchar utcTimeZone)
 {
 	volatile uchar tens, units;
 	volatile signed char hourTimeZone;
 	volatile float longitude, latitude;
 
-	if(gpsCaptureNMEASentence == 0 & structNmeaGPRMC.wasRead == 'N')
+	// If Sentence is Valid, parse all values
+	if(gpsNmeaSentenceBuffer[2][0][0] == 'F' & gpsNmeaSentenceBuffer[2][2][0] == 'A')
 	{
-		// If Sentence is Valid, parse all values
-		if(gpsNmeaSentenceBuffer[2][0][0] == 'F' & gpsNmeaSentenceBuffer[2][2][0] == 'A')
+		// Obtain RTC Hour
+		tens = gpsNmeaSentenceBuffer[2][1][0] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][1][1] - 0x30;
+		hourTimeZone = (tens * 10) + units - utcTimeZone;
+
+		// Obtain RTC Minute
+		tens = gpsNmeaSentenceBuffer[2][1][2] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][1][3] - 0x30;
+		structNmeaGPRMC.rtcMinute = (tens * 10) + units;
+
+		// Obtain RTC Second
+		tens = gpsNmeaSentenceBuffer[2][1][4] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][1][5] - 0x30;
+		structNmeaGPRMC.rtcSecond = (tens * 10) + units;
+
+		// Obtain RTC Day
+		tens = gpsNmeaSentenceBuffer[2][9][0] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][9][1] - 0x30;
+		structNmeaGPRMC.rtcDay = (tens * 10) + units;
+
+		// Obtain RTC Month
+		tens = gpsNmeaSentenceBuffer[2][9][2] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][9][3] - 0x30;
+		structNmeaGPRMC.rtcMonth = (tens * 10) + units;
+
+		// Obtain RTC Year
+		tens = gpsNmeaSentenceBuffer[2][9][4] - 0x30;
+		units = gpsNmeaSentenceBuffer[2][9][5] - 0x30;
+		structNmeaGPRMC.rtcYear = (tens * 10) + units;
+
+		// Verify if the hour is negative, and correct situation
+		if(hourTimeZone < 0)
 		{
-			// Obtain RTC Hour
-			tens = gpsNmeaSentenceBuffer[2][1][0] - 0x30;
-			units = gpsNmeaSentenceBuffer[2][1][1] - 0x30;
-			hourTimeZone = (tens * 10) + units - utcTimeZone;
-
-			// Obtain RTC Minute
-			tens = gpsNmeaSentenceBuffer[2][1][2] - 0x30;
-			units = gpsNmeaSentenceBuffer[2][1][3] - 0x30;
-			structNmeaGPRMC.rtcMinute = (tens * 10) + units;
-
-			// Obtain RTC Second
-			tens = gpsNmeaSentenceBuffer[2][1][4] - 0x30;
-			units = gpsNmeaSentenceBuffer[2][1][5] - 0x30;
-			structNmeaGPRMC.rtcSecond = (tens * 10) + units;
-
-			// Obtain RTC Day
-			tens = gpsNmeaSentenceBuffer[2][9][0] - 0x30;
-			units = gpsNmeaSentenceBuffer[2][9][1] - 0x30;
-			structNmeaGPRMC.rtcDay = (tens * 10) + units;
-
-			// Obtain RTC Month
-			tens = gpsNmeaSentenceBuffer[2][9][2] - 0x30;
-			units = gpsNmeaSentenceBuffer[2][9][3] - 0x30;
-			structNmeaGPRMC.rtcMonth = (tens * 10) + units;
-
-			// Obtain RTC Year
-			tens = gpsNmeaSentenceBuffer[2][9][4] - 0x30;
-			units = gpsNmeaSentenceBuffer[2][9][5] - 0x30;
-			structNmeaGPRMC.rtcYear = (tens * 10) + units;
-
-			// Verify if the hour is negative, and correct situation
-			if(hourTimeZone < 0)
-			{
-				structNmeaGPRMC.rtcHour = 24 + hourTimeZone;
-				structNmeaGPRMC.rtcDay--;
-			}
-			else
-			{
-				structNmeaGPRMC.rtcHour = hourTimeZone;
-			}
-
-			// Obtain Latitude Hour Minute Second
-			latitude = gpsObtainFloatValue(2, 3);
-			structNmeaGPRMC.latitudeHour = (uchar) (latitude/100);
-			structNmeaGPRMC.latitudeMinuteSecond = latitude - (structNmeaGPRMC.latitudeHour * 100);
-
-			// Obtain Longitude Hour Minute Second
-			longitude = gpsObtainFloatValue(2, 5);
-			structNmeaGPRMC.longitudeHour = (uchar) (longitude/100);
-			structNmeaGPRMC.longitudeMinuteSecond = longitude - (structNmeaGPRMC.longitudeHour * 100);
-
-			// Obtain Speed Over Ground
-			structNmeaGPRMC.speedOverGround = gpsObtainFloatValue(2, 7);
-
-			// Obtain Course
-			structNmeaGPRMC.course = gpsObtainFloatValue(2, 8);
-
-			// Valid Sentence without read
-			structNmeaGPRMC.isValid = 'Y';
-			structNmeaGPRMC.wasRead = 'N';
+			structNmeaGPRMC.rtcHour = 24 + hourTimeZone;
+			structNmeaGPRMC.rtcDay--;
 		}
 		else
 		{
-			structNmeaGPRMC.isValid = 'N';
-			structNmeaGPRMC.wasRead = 'N';
+			structNmeaGPRMC.rtcHour = hourTimeZone;
 		}
+
+		// Obtain Latitude Hour Minute Second
+		latitude = gpsObtainFloatValue(2, 3);
+		structNmeaGPRMC.latitudeHour = (uchar) (latitude/100);
+		structNmeaGPRMC.latitudeMinuteSecond = latitude - (structNmeaGPRMC.latitudeHour * 100);
+
+		// Obtain Longitude Hour Minute Second
+		longitude = gpsObtainFloatValue(2, 5);
+		structNmeaGPRMC.longitudeHour = (uchar) (longitude/100);
+		structNmeaGPRMC.longitudeMinuteSecond = longitude - (structNmeaGPRMC.longitudeHour * 100);
+
+		// Obtain Speed Over Ground
+		structNmeaGPRMC.speedOverGround = gpsObtainFloatValue(2, 7);
+
+		// Obtain Course
+		structNmeaGPRMC.course = gpsObtainFloatValue(2, 8);
+
+		// Valid Sentence without read
+		structNmeaGPRMC.isValid = 'Y';
+		structNmeaGPRMC.wasRead = 'N';
 	}
-	return &structNmeaGPRMC;
 }
 
 /**
@@ -409,6 +403,14 @@ float gpsObtainFloatValue(uchar nmeaSentence, uchar varPosition)
 	value = integerPart + ((float) decimalPart/(float) decimalDivisor);
 
 	return value;
+}
+
+/**
+ * Get NMEA RMC Struct
+ */
+gpsStructNmeaGPRMC * gpsNmeaGPRMCStruct()
+{
+	return &structNmeaGPRMC;
 }
 
 

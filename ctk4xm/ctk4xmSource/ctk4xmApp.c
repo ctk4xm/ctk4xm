@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xmApp.c
  *  @brief Application Program
- *  @date 10/08/2013
+ *  @date 18/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -121,12 +121,8 @@ void application()
 
 	while(1)
 	{
-		ioDigitalWrite(LED, 1);
-
 		// Get NMEA GPRMC
-		structNmeaGPRMC = gpsParseNmeaGPRMCSentence(5);
-
-		ioDigitalWrite(LED, 0);
+		structNmeaGPRMC = gpsNmeaGPRMCStruct();
 
 		if((*structNmeaGPRMC).isValid == 'Y' & (*structNmeaGPRMC).wasRead == 'N')
 		{
@@ -144,7 +140,7 @@ void application()
 			lcdDataDecFormat((*structNmeaGPRMC).rtcMonth, 2);
 			lcdWrite('/');
 			lcdDataDecFormat((*structNmeaGPRMC).rtcYear, 2);
-			
+
 			lcdSetCursor(1,1);
 			lcdDataDecFormat((*structNmeaGPRMC).latitudeHour, 2);
 			lcdDataFloatFormat((*structNmeaGPRMC).latitudeMinuteSecond, 2, 4);
@@ -157,6 +153,7 @@ void application()
 			display7SegWriteDecFormat(5, (*structNmeaGPRMC).rtcSecond, 2);
 
 			// Finally set was read
+			(*structNmeaGPRMC).isValid = 'N';
 			(*structNmeaGPRMC).wasRead = 'Y';
 
 			ioDigitalWrite(LED2, 0);
