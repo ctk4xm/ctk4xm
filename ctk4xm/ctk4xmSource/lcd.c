@@ -175,8 +175,8 @@ void lcdSendByte(uchar byteExport)
 	}
 	ioDigitalWrite(LCD_E, OFF);
 
-	// Delay 2 ms
-	delayMs(2);
+	// Delay 1 ms
+	delayMs(1);
 }
 
 /**
@@ -210,6 +210,9 @@ void lcdInstru(uchar instru)
 void lcdClear()
 {
 	lcdInstru(LCD_CLEAR);
+
+	// Delay 1 ms
+	delayMs(1);
 }
 
 /**
@@ -218,6 +221,9 @@ void lcdClear()
 void lcdHome()
 {
 	lcdInstru(LCD_HOME);
+
+	// Delay 1 ms
+	delayMs(1);
 }
 
 /**

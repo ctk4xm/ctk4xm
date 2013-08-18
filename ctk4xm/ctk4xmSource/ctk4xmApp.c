@@ -78,8 +78,10 @@ uchar nmeaSentenceData [15][15];
 
 #ifdef TIM
 	#define LED		&P1OUT,BIT0
+	#define LED2	&P1OUT,BIT1
 #else
 	#define LED		&PTCD,BIT0
+	#define LED2	&PTCD,BIT1
 #endif
 
 /*
@@ -87,6 +89,8 @@ uchar nmeaSentenceData [15][15];
  */
 void application()
 {
+	gpsStructNmeaGPRMC *structNmeaGPRMC;
+
 	// Stop Watchdog Timer
 	coreStopWatchdogTimer();
 
@@ -98,6 +102,7 @@ void application()
 
 	// Configure LED Pin
 	ioDigitalOutput(LED);
+	ioDigitalOutput(LED2);
 
 	// GPS Init
 	gpsInit();
@@ -116,11 +121,17 @@ void application()
 
 	while(1)
 	{
+		ioDigitalWrite(LED, 1);
+
 		// Get NMEA GPRMC
-		gpsStructNmeaGPRMC *structNmeaGPRMC = gpsParseNmeaGPRMCSentence(5);
+		structNmeaGPRMC = gpsParseNmeaGPRMCSentence(5);
+
+		ioDigitalWrite(LED, 0);
 
 		if((*structNmeaGPRMC).isValid == 'Y' & (*structNmeaGPRMC).wasRead == 'N')
 		{
+			ioDigitalWrite(LED2, 1);
+
 			// Export data to LCD
 			lcdSetCursor(2,1);
 			lcdDataDecFormat((*structNmeaGPRMC).rtcHour, 2);
@@ -147,6 +158,8 @@ void application()
 
 			// Finally set was read
 			(*structNmeaGPRMC).wasRead = 'Y';
+
+			ioDigitalWrite(LED2, 0);
 		}
 	}
 }
