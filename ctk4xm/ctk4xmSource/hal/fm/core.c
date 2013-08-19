@@ -1,7 +1,7 @@
 /**
  *  @file core.c
  *  @brief General CTK4XM API Specifications - Freescale Microcontroller
- *  @date 02/08/2013
+ *  @date 19/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -72,9 +72,12 @@ void _hal_coreSelectInternalClock(uchar frequencyMHz)
  */
 void _hal_coreSelectExternalClock()
 {
-	// FLL Bypassed External Reference
-	ICGC1 = 0x70;
-	ICGC2 = 0x00;
+	// FEE - FLL Engaged External Reference
+	ICGC1 = 0b01111000;
+	ICGC2 = 0b00110000;
+
+	// Wait FLL Engaged
+	while(!(ICGS1 & ICGS1_LOCK_MASK));
 }
 
 /**

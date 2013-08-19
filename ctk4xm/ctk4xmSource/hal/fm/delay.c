@@ -1,7 +1,7 @@
 /**
  *  @file delay.c
  *  @brief Module that allows delays
- *  @date 24/07/2013
+ *  @date 19/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -35,7 +35,7 @@ void _hal_delayMs(uint delayMs)
 	 uint i, j;
 
 	 for(i = 0; i < delayMs; i++)
-		 for(j = 0; j < 181; j++);
+		 for(j = 0; j < 724; j++);
 }
 
 #endif

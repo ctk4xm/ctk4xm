@@ -1,7 +1,7 @@
 /**
  *  @file timer.c
  *  @brief Module that drive Timer - Freescale Microcontroller
- *  @date 06/08/2013
+ *  @date 19/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -30,11 +30,13 @@
  */
 void _hal_timerSetCount(uint valueCounter)
 {
-	// Set 2000us = 2 ms
-	TPM1MODH = 0x07;
-	TPM1MODL = 0xD0;
+	// 2000 us / 0.2 us = 10.000
+	TPM1MODH = 0x27;
+	TPM1MODL = 0x10;
 
-	// Select 1MHz Frecuecy --> 1us
+	// CLKS[B:A] =  01 --> BUSCLK
+	// PS[2:0]   = 010 --> % 4
+	// @ 5 MHz --> 0.2 us
 	TPM1SC = 0b00001010;
 }
 

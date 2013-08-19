@@ -1,7 +1,7 @@
 /**
  *  @file lcd.c
  *  @brief Module that controls Standard LCD Module
- *  @date 05/08/2013
+ *  @date 19/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -530,40 +530,28 @@ void lcdDataFloatFormatSetPosition(uchar row, uchar column, float dataExport, uc
 void lcdDataFloatFormat(float dataExport, uchar quantityDigits, uchar quantityDecimals)
 {
 	uchar i = 0;
-	float divisorInteger = 1;
-	float divisorDecimal = 1;
+	float divisor = 1;
 	uchar digitExport = 0;
 
-	// Get Integer Digits
+	// Obtain Maximum Divisor
 	for(i = 1; i < quantityDigits; i++)
 	{
-		divisorInteger *= 10;
+		divisor *= 10;
 	}
-	
-	// Get Decimal Digits
-	for(i = 1; i < quantityDecimals; i++)
-	{
-		divisorDecimal *= 10;
-	}	
 
-	// Print Integer Digits
-	for(i = 1; i < quantityDigits; i++)
+	// Print Digits
+	for(i = 0; i < (quantityDigits + quantityDecimals); i++)
 	{
-		digitExport = (uchar) (dataExport / divisorInteger);
-		dataExport =- (digitExport * 1000);
-		lcdData(digitExport);
-		divisorInteger /= 10;
-	}	
-	
-	// Fixed Decimal Digits
-	dataExport *= divisorDecimal;
-	
-	// Print Decimal Digits
-	for(i = 1; i < quantityDecimals; i++)
-	{
-		digitExport = (uchar) (dataExport / divisorDecimal);
-		lcdData(digitExport);
-		divisorDecimal /= 10;
+		// Print Decimal Separator
+		if(i == quantityDigits)
+		{
+			lcdData(',');
+		}
+
+		digitExport = (uchar) (dataExport / divisor);
+		dataExport = dataExport - (digitExport * divisor);
+		lcdData(digitExport + 0x30);
+		divisor /= 10;
 	}
 }
 

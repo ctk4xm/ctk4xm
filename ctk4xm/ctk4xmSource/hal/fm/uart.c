@@ -1,7 +1,7 @@
 /**
  *  @file uart.c
  *  @brief Module that allows Asynchronous Communications
- *  @date 05/08/2013
+ *  @date 19/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -44,8 +44,8 @@ void _hal_uartInit(uchar frequencyMHz)
 			break;
 
 		case 4:
-			SCI1BDH = 0x00;
-			SCI1BDL = 0x34;		// 4800 bps
+			SCI1BDH = 0x01;
+			SCI1BDL = 0x04;		// 4800 bps
 			break;
 
 		case 8:
