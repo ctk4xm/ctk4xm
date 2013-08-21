@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xmApp.c
  *  @brief Application Program
- *  @date 18/08/2013
+ *  @date 21/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -67,14 +67,14 @@
 #include "gps.h"
 
 /**
+ * EEPROM Include
+ */
+#include "eeprom.h"
+
+/**
  * TIMER Include
  */
 #include "timer.h"
-
-/**
- * NMEA Sentence Data
- */
-uchar nmeaSentenceData [15][15];
 
 #ifdef TIM
 	#define LED		&P1OUT,BIT0
@@ -89,6 +89,8 @@ uchar nmeaSentenceData [15][15];
  */
 void application()
 {
+	volatile uchar writeState;
+	volatile uchar data;
 	gpsStructNmeaGPRMC *structNmeaGPRMC;
 
 	// Stop Watchdog Timer
@@ -104,6 +106,9 @@ void application()
 	ioDigitalOutput(LED);
 	ioDigitalOutput(LED2);
 
+	// EEPROM Init
+	eepromInit(20);
+
 	// GPS Init
 	gpsInit();
 
@@ -116,9 +121,24 @@ void application()
 	// Write Welcome Message
 	lcdWriteMessage(1,1,"CTK4XM  Easy!!!");
 
+	// Read Byte in Flash
+	data = eepromReadByte((uchar *)0xA000);
+
+	// If byte was written, delete section
+	if(data != 0xFF)
+	{
+		eepromErasePage((uchar *)0xA000);
+	}
+	// Write Byte
+	writeState = eepromWriteByte((uchar *)0xA000, 'A');
+	// Verify Byte Written
+	data = eepromReadByte((uchar *)0xA000);
+	// Export data to LCD
+	lcdWriteSetPosition(2, 1, data);
+	
 	// Enable MCU Interrupts
 	coreEnableInterrupts();
-
+	
 	while(1)
 	{
 		// Get NMEA GPRMC

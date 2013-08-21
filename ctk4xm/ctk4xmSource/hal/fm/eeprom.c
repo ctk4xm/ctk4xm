@@ -1,7 +1,7 @@
 /**
  *  @file eeprom.h
  *  @brief Module that allows simulate EEPROM in FLASH Memory
- *  @date 19/08/2013
+ *  @date 21/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -32,6 +32,9 @@
  */
 void _hal_eepromInit(uchar busFrequency)
 {
+	// Clear FACCERR Flag
+	FSTAT &= ~(FSTAT_FACCERR_MASK);
+		
 	// Initialize Flash Clock Divider
 	switch(busFrequency)
 	{
@@ -53,7 +56,7 @@ void _hal_eepromInit(uchar busFrequency)
 		case 20:
 			FCDIV = FCDIV_PRDIV8 | 12;
 			break;
-	}
+	}		
 }
 
 
@@ -61,9 +64,9 @@ void _hal_eepromInit(uchar busFrequency)
  * @brief Read Byte EEPROM
  * @param address Address EEPROM to read
  */
-uchar _hal_eepromReadByte(uint address)
+uchar _hal_eepromReadByte(uchar *addressPtr)
 {
-	return 'E';
+	return *addressPtr;
 }
 
 /**
@@ -73,16 +76,39 @@ uchar _hal_eepromReadByte(uint address)
  */
 uchar _hal_eepromWriteByte(uchar *addressPtr, uchar writeByte)
 {
-	uchar errorCode = 0;
-
 	// Clear FACCERR Flag
 	FSTAT &= ~(FSTAT_FACCERR_MASK);
 
 	// Store data to write
 	*addressPtr = writeByte;
-
+	
 	// Store Byte Program Command
-	FCMD = 0x20;
+	return _hal_eepromExecuteCommand(0x20);
+}
+
+/**
+ * @brief Erase Page EEPROM
+ * @param address Address EEPROM to erase
+ */
+uchar _hal_eepromErasePage(uchar *addressPtr)
+{
+	// Clear FACCERR Flag
+	FSTAT &= ~(FSTAT_FACCERR_MASK);
+	
+	// Store Erase Page Command
+	return _hal_eepromExecuteCommand(0x40);
+}
+
+/**
+ * @brief Execute EEPROM Command
+ * @param eepromCommand Command EEPROM to execute
+ */
+uchar _hal_eepromExecuteCommand(uchar eepromCommand)
+{
+	uchar errorCode = 0;
+
+	// Store EEPROM Command
+	FCMD = eepromCommand;
 
 	// Execute the command
 	FSTAT |= FSTAT_FCBEF_MASK;
@@ -93,20 +119,19 @@ uchar _hal_eepromWriteByte(uchar *addressPtr, uchar writeByte)
 		nop;
 		nop;
 		nop;
+		nop;
 	}
 
 	// Verify errors at byte write
-	if(FSTAT & FSTAT_FPVIOL_MASK == 0 || FSTAT & FSTAT_FACCERR_MASK == 0)
-	{
-		if(!(FSTAT & FSTAT_FCCF_MASK))
-		{
-			errorCode = 1;
-		}
-	}
-	else
+	if((FSTAT & FSTAT_FPVIOL_MASK) || (FSTAT & FSTAT_FACCERR_MASK))
 	{
 		errorCode = 1;
 	}
+	else
+	{
+		while(!(FSTAT & FSTAT_FCBEF_MASK));
+	}
+	return errorCode;
 }
 
 #endif

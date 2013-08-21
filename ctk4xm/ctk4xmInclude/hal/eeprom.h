@@ -1,7 +1,7 @@
 /**
  *  @file eeprom.h
  *  @brief Module that allows simulate EEPROM in FLASH Memory
- *  @date 19/08/2013
+ *  @date 21/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -36,7 +36,7 @@ void _hal_eepromInit(uchar busFrequency);
  * @brief Read Byte EEPROM
  * @param address Address EEPROM to read
  */
-uchar _hal_eepromReadByte(uint address);
+uchar _hal_eepromReadByte(uchar *addressPtr);
 
 /**
  * @brief Write Byte EEPROM
@@ -44,5 +44,17 @@ uchar _hal_eepromReadByte(uint address);
  * @param writeByte Byte to Write in EEPROM
  */
 uchar _hal_eepromWriteByte(uchar *addressPtr, uchar writeByte);
+
+/**
+ * @brief Erase Page EEPROM
+ * @param address Address EEPROM to erase
+ */
+uchar _hal_eepromErasePage(uchar *addressPtr);
+
+/**
+ * @brief Execute EEPROM Command
+ * @param eepromCommand Command EEPROM to execute
+ */
+uchar _hal_eepromExecuteCommand(uchar eepromCommand);
 
 #endif
