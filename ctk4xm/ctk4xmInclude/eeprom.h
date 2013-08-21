@@ -28,6 +28,7 @@
 
 /**
  * @brief Init EEPROM Module
+ * @param frequency Bus Frequency
  */
 void eepromInit(uchar busFrequency);
 

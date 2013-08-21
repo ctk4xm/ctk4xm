@@ -55,6 +55,6 @@ uchar _hal_eepromErasePage(uchar *addressPtr);
  * @brief Execute EEPROM Command
  * @param eepromCommand Command EEPROM to execute
  */
-uchar _hal_eepromExecuteCommand(uchar eepromCommand);
+uchar _hal_eepromExecuteCommand(uchar eepromCommand, uchar *addressPtr, uchar writeByte);
 
 #endif

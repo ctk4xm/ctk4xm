@@ -33,7 +33,10 @@
 void _hal_eepromInit(uchar busFrequency)
 {
 	// Clear FACCERR Flag
-	FSTAT &= ~(FSTAT_FACCERR_MASK);
+	if(FSTAT & FSTAT_FACCERR_MASK)
+	{
+		FSTAT |= FSTAT_FACCERR_MASK;
+	}
 		
 	// Initialize Flash Clock Divider
 	switch(busFrequency)
@@ -76,14 +79,8 @@ uchar _hal_eepromReadByte(uchar *addressPtr)
  */
 uchar _hal_eepromWriteByte(uchar *addressPtr, uchar writeByte)
 {
-	// Clear FACCERR Flag
-	FSTAT &= ~(FSTAT_FACCERR_MASK);
-
-	// Store data to write
-	*addressPtr = writeByte;
-	
 	// Store Byte Program Command
-	return _hal_eepromExecuteCommand(0x20);
+	return _hal_eepromExecuteCommand(0x20, addressPtr, writeByte);
 }
 
 /**
@@ -92,20 +89,26 @@ uchar _hal_eepromWriteByte(uchar *addressPtr, uchar writeByte)
  */
 uchar _hal_eepromErasePage(uchar *addressPtr)
 {
-	// Clear FACCERR Flag
-	FSTAT &= ~(FSTAT_FACCERR_MASK);
-	
 	// Store Erase Page Command
-	return _hal_eepromExecuteCommand(0x40);
+	return _hal_eepromExecuteCommand(0x40, addressPtr, 0xFF);
 }
 
 /**
  * @brief Execute EEPROM Command
  * @param eepromCommand Command EEPROM to execute
  */
-uchar _hal_eepromExecuteCommand(uchar eepromCommand)
+uchar _hal_eepromExecuteCommand(uchar eepromCommand, uchar *addressPtr, uchar writeByte)
 {
 	uchar errorCode = 0;
+
+	// Clear FACCERR Flag
+	if(FSTAT & FSTAT_FACCERR_MASK)
+	{
+		FSTAT |= FSTAT_FACCERR_MASK;
+	}
+
+	// Store data to write
+	*addressPtr = writeByte;
 
 	// Store EEPROM Command
 	FCMD = eepromCommand;
