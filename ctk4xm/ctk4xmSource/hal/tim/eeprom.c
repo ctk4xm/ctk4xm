@@ -1,7 +1,7 @@
 /**
  *  @file eeprom.h
  *  @brief Module that allows simulate EEPROM in FLASH Memory
- *  @date 21/08/2013
+ *  @date 23/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -47,10 +47,11 @@ uchar _hal_eepromReadByte(uchar *addressPtr)
 
 /**
  * @brief Write Byte EEPROM
+ * @param *pageBaseAddressPtr Page Base Address
  * @param *addressPtr Pointer to Address EEPROM to write
  * @param writeByte Byte to Write in EEPROM
  */
-uchar _hal_eepromWriteByte(uchar *addressPtr, uchar writeByte)
+uchar _hal_eepromWriteByte(uchar *pageBaseAddressPtr, uchar *addressPtr, uchar writeByte)
 {
 	return 0;
 }

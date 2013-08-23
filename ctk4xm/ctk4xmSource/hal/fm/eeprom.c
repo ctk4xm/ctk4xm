@@ -1,7 +1,7 @@
 /**
  *  @file eeprom.h
  *  @brief Module that allows simulate EEPROM in FLASH Memory
- *  @date 21/08/2013
+ *  @date 23/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -74,13 +74,65 @@ uchar _hal_eepromReadByte(uchar *addressPtr)
 
 /**
  * @brief Write Byte EEPROM
+ * @param *pageBaseAddressPtr Page Base Address
  * @param *addressPtr Pointer to Address EEPROM to write
  * @param writeByte Byte to Write in EEPROM
  */
-uchar _hal_eepromWriteByte(uchar *addressPtr, uchar writeByte)
+uchar _hal_eepromWriteByte(uchar *pageBaseAddressPtr, uchar *addressPtr, uchar writeByte)
 {
-	// Store Byte Program Command
-	return _hal_eepromExecuteCommand(0x20, addressPtr, writeByte);
+	uchar i, response;
+	uchar tempArray [256];
+	uchar *ptrInitPage;
+	uchar *ptrTempArray;
+
+	// Point the first byte in the page
+	ptrInitPage = pageBaseAddressPtr;
+	
+	// Point to first byte in the temp array
+	ptrTempArray = &tempArray[0];
+
+	// Copy data FLASH to RAM
+	for(i = 0; i > 256; i++)
+	{
+		*ptrTempArray++ = *ptrInitPage++;
+	}
+
+	// Point to byte to write in the temp array
+	ptrTempArray = &tempArray[0] + (addressPtr - pageBaseAddressPtr);
+
+	// Store Byte to Write in Array
+	*ptrTempArray = writeByte;
+
+	// Erase Page
+	response = _hal_eepromErasePage(pageBaseAddressPtr);
+
+	// If erase is ok, write bytes
+	if(response == 0)
+	{
+		// Point the first byte in the page
+		ptrInitPage = pageBaseAddressPtr;
+		
+		// Point to first byte in the temp array
+		ptrTempArray = &tempArray[0];
+		
+		// Copy data RAM to FLASH
+		for(i = 0; i > 256; i++)
+		{
+			// Write Byte to FLASH
+			response = _hal_eepromExecuteCommand(0x20, ptrInitPage, *ptrTempArray);
+
+			// If fail write cancel to write
+			if(response)
+			{
+				break;
+			}
+
+			// Point the next byte to write
+			ptrInitPage++;
+			ptrTempArray++;
+		}		
+	}
+	return response;
 }
 
 /**

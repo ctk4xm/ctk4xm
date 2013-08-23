@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xmApp.c
  *  @brief Application Program
- *  @date 21/08/2013
+ *  @date 23/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -130,7 +130,7 @@ void application()
 		eepromErasePage((uchar *)0xA000);
 	}
 	// Write Byte
-	writeState = eepromWriteByte((uchar *)0xA000, 'A');
+	writeState = eepromWriteByte((uchar *)0xA000, (uchar *)0xA000, 'A');
 	// Verify Byte Written
 	data = eepromReadByte((uchar *)0xA000);
 	// Export data to LCD
