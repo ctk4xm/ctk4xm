@@ -1,7 +1,7 @@
 /**
  *  @file ctk4xmApp.c
  *  @brief Application Program
- *  @date 23/08/2013
+ *  @date 24/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -110,7 +110,7 @@ void application()
 	eepromInit(20);
 
 	// GPS Init
-	gpsInit();
+	gpsInit(SCI1);
 
 	// Init LCD Module
 	display7SegInit();
@@ -122,7 +122,7 @@ void application()
 	lcdWriteMessage(1,1,"CTK4XM  Easy!!!");
 
 	// Read Byte in Flash
-	data = eepromReadByte((uchar *)0xA000);
+	/*data = eepromReadByte((uchar *)0xA000);
 
 	// If byte was written, delete section
 	if(data != 0xFF)
@@ -134,7 +134,7 @@ void application()
 	// Verify Byte Written
 	data = eepromReadByte((uchar *)0xA000);
 	// Export data to LCD
-	lcdWriteSetPosition(2, 1, data);
+	lcdWriteSetPosition(2, 1, data);*/
 	
 	// Enable MCU Interrupts
 	coreEnableInterrupts();

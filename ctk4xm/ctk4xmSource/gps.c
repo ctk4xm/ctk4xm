@@ -1,7 +1,7 @@
 /**
  *  @file gps.c
  *  @brief Module that allows work GPS
- *  @date 18/08/2013
+ *  @date 24/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -21,10 +21,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * GPS Include
+ */
 #include "gps.h"
-#include "io.h"
-#include "delay.h"
-#include "uart.h"
 
 /**
  * NMEA Sentence Buffer
@@ -94,7 +94,7 @@ uchar i, j, k, l;
 /**
  * @brief GPS Init
  */
-void gpsInit()
+void gpsInit(uchar uartId)
 {
 	// Capture NMEA Sentence OFF
 	gpsCaptureNMEASentence = 0;
@@ -112,7 +112,7 @@ void gpsInit()
 	ioDigitalInput(GPS_WAKE);
 
 	// UART init Clock 4MHz
-	uartInit(4);
+	uartInit(uartId);
 
 	// UART Read Interrupt
 	uartReadInterrupt(ON);

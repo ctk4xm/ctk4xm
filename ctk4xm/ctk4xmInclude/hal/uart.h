@@ -1,7 +1,7 @@
 /**
  *  @file uart.h
  *  @brief Module that allows Asynchronous Communications
- *  @date 13/07/2013
+ *  @date 24/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -29,8 +29,9 @@
 
 /**
  * @brief Init UART Module
+ * @param uartId UART Id
  */
-void _hal_uartInit();
+void _hal_uartInit(uchar uartId);
 
 /**
  * @brief Read Byte UART

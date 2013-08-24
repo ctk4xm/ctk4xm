@@ -1,7 +1,7 @@
 /**
  *  @file gps.h
  *  @brief Module that allows work GPS
- *  @date 18/08/2013
+ *  @date 24/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -24,9 +24,13 @@
 #ifndef GPS_H_
 #define GPS_H_
 
-#include "config.h"
-#include "math.h"
 
+
+#include "config.h"
+#include "delay.h"
+#include "io.h"
+#include "math.h"
+#include "uart.h"
 
 /**
  * Struct GPRMC NMEA Sentence
@@ -55,8 +59,9 @@ typedef struct
 
 /**
  * @brief GPS Init
+ * @parame uartID UART Id
  */
-void gpsInit();
+void gpsInit(uchar uartId);
 
 /**
  * @brief Receive NMEA Sentence

@@ -1,7 +1,7 @@
 /**
  *  @file config.h
  *  @brief General CTK4XM API Configurations
- *  @date 02/08/2013
+ *  @date 24/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -28,6 +28,15 @@
  * Microcontroller Platform Select
  */
 #define	TIM
+
+/**
+ * Frequency Bus Clock --> Default 20MHz
+ */
+#define	BUS_CLK		20000000UL
+
+#define	SCI1_BPS		4800UL
+
+#define	SCI2_BPS		9600UL
 
 /**
  * General Include Definition Section
@@ -130,6 +139,10 @@
 	#define GPS_ON_OFF			&P2OUT,BIT6
 	#define GPS_WAKE			&P2OUT,BIT5
 
+	// Adafruit Printer Pins Definition
+	#define ADAFUIT_PRINTER_TX	&P2OUT,BIT0
+	#define ADAFUIT_PRINTER_RX	&P2OUT,BIT1
+
 #endif
 
 #ifdef FREESCALE
@@ -159,15 +172,15 @@
 	#define LCD_D6				&PTAD,BIT3
 	#define LCD_D7				&PTAD,BIT2
 
-	// UART Module Pins Definition
-	#define SCI1_TX				&PTED,BIT0
-	#define SCI1_RX				&PTED,BIT1
-
 	// GPS Module Pins Definition
 	#define GPS_TX				&PTED,BIT0
 	#define GPS_RX				&PTED,BIT1
 	#define GPS_ON_OFF			&PTCD,BIT6
 	#define GPS_WAKE			&PTCD,BIT5
+
+	// Adafruit Printer Pins Definition
+	#define ADAFUIT_PRINTER_RX	&PTCD,BIT0
+	#define ADAFUIT_PRINTER_TX	&PTCD,BIT1
 
 #endif
 

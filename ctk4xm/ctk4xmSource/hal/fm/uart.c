@@ -1,7 +1,7 @@
 /**
  *  @file uart.c
  *  @brief Module that allows Asynchronous Communications
- *  @date 19/08/2013
+ *  @date 24/08/2013
  *  @version 1.0.0
  *
  *  C Toolkit For X Microcontroller
@@ -25,48 +25,43 @@
 
 #ifdef FREESCALE
 
+// UART Module Pins Definition
+#define SCI1_TX			&PTED,BIT0
+#define SCI1_RX			&PTED,BIT1
+#define SCI2_TX			&PTCD,BIT0
+#define SCI2_RX			&PTCD,BIT1
+
+#define	SC1_BR			BUS_CLK / (16 * SCI1_BPS)
+#define	SC1_BDH			(SC1_BR & 0xFF00) >> 8
+#define	SC1_BDL			SC1_BR & 0x00FF
+
+#define	SC2_BR			BUS_CLK / (16 * SCI2_BPS)
+#define	SC2_BDH			(SC2_BR & 0xFF00) >> 8
+#define	SC2_BDL			SC2_BR & 0x00FF
+
 /**
  * @brief Init UART Module
- * @param frequencyMHz MCU Frequency in MHz
+ * @param uartId UART Id
+ * UART1 --> PTE0 (RX), PTE1 (TX)
+ * UART2 --> PTC0 (RX), PTC1 (TX)
  */
-void _hal_uartInit(uchar frequencyMHz)
+void _hal_uartInit(uchar uartId)
 {
 	// Configure SCI Pins
-	ioDigitalOutput(SCI1_TX);
-	ioDigitalInput(SCI1_RX);
-
-	// Configure 9600 bps
-	switch(frequencyMHz)
+	switch(uartId)
 	{
 		case 1:
-			SCI1BDH = 0x00;
-			SCI1BDL = 0x07;
+			ioDigitalOutput(SCI1_TX);
+			ioDigitalInput(SCI1_RX);
+			SCI1BDH = SC1_BDH;
+			SCI1BDL = SC1_BDL;
 			break;
-
-		case 4:
-			SCI1BDH = 0x01;
-			SCI1BDL = 0x04;		// 4800 bps
-			break;
-
-		case 8:
-			SCI1BDH = 0x00;
-			SCI1BDL = 0x3A;
-			break;
-
-		case 12:
-			SCI1BDH = 0x00;
-			SCI1BDL = 0x57;
-			break;
-
-		case 16:
-			SCI1BDH = 0x00;
-			SCI1BDL = 0x74;
-			break;
-
-		default:
-			SCI1BDH = 0x00;
-			SCI1BDL = 0x3A;
-			break;
+		case 2:
+			ioDigitalOutput(SCI2_TX);
+			ioDigitalInput(SCI2_RX);
+			SCI2BDH = SC2_BDH;
+			SCI2BDL = SC2_BDL;
+ 			break;
 	}
 
 	// Enabled RX and TX
